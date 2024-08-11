@@ -31,11 +31,6 @@ var jsPsychSelectionLearning = (function (jspsych) {
 				default: undefined,
 				array: true,
 			},
-			epistemicMoralCondition: {
-				type: jspsych.ParameterType.STRING,
-				pretty_name: "Epistemic or Moral Condition",
-				default: undefined,
-			}
 		}
 	};
 
@@ -73,18 +68,18 @@ var jsPsychSelectionLearning = (function (jspsych) {
 
 			// Ratings
 			const selectionRatingsDict = {
-				// <!-- Q12 -->
+				// <!-- Q12: Roentgen -->
 				epistemicRatingsQ12: [
-					34, 100, 59, 89, 84, 50, 68, 86, 83, 68,
-					30, 79, 3, 93, 84, 100, 92, 78, 65, 89,
-					89, 77, 67, 100, 60, 68, 79, 63, 62, 80,
-					77, 75, 47, 61, 51, 60, 99, 100, 100, 79,
-					100, 47, 72, 83, 75, 49, 63, 71, 99, 45,
-					100, 68, 49, 77, 100, 47, 96, 33, 69, 92,
-					74, 48, 99, 48, 84, 87, 90, 47, 56, 95,
-					73, 64, 51, 92, 94, 84, 100, 77, 48, 82,
-					84, 48, 100, 85, 56, 57, 64, 71, 76, 66,
-					83, 34, 57, 55, 72, 100, 80, 75, 49, 100
+					34, 100,  59,  89,  84,  50,  68,  86,  83,  68,
+					30,  79,   3,  93,  84, 100,  92,  78,  65,  89,
+					89,  77,  67, 100,  60,  68,  79,  63,  62,  80,
+					77,  75,  47,  61,  51,  60,  99, 100, 100,  79,
+					100, 47,  72,  83,  75,  49,  63,  71,  99,  45,
+					100, 68,  49,  77, 100,  47,  96,  33,  69,  92,
+					74,  48,  99,  48,  84,  87,  90,  47,  56,  95,
+					73,  64,  51,  92,  94,  84, 100,  77,  48,  82,
+					84,  48, 100,  85,  56,  57,  64,  71,  76,  66,
+					83,  34,  57,  55,  72, 100,  80,  75,  49, 100
 				],
 				moralRatingsQ12: [
 					43, 52, 68, 66, 75, 89, 64, 73, 100, 68,
@@ -99,7 +94,7 @@ var jsPsychSelectionLearning = (function (jspsych) {
 					83, 57, 56, 4, 75, 82, 86, 63, 70, 84
 				],
 
-				// <!-- Q26 -->
+				// <!-- Q26: Akon -->
 				epistemicRatingsQ26: [
 					87, 45, 100, 65, 100, 53, 48, 33, 4, 67,
 					52, 49, 66, 85, 72, 48, 19, 32, 39, 90,
@@ -125,7 +120,7 @@ var jsPsychSelectionLearning = (function (jspsych) {
 					28, 63, 34, 42, 54, 73, 68, 57, 26, 100
 				],
 
-				// <!-- Q27 -->
+				// <!-- Q27: Gandhi -->
 				epistemicRatingsQ27: [
 					73, 87, 79, 61, 82, 58, 81, 56, 72, 50,
 					74, 25, 80, 84, 79, 100, 85, 53, 66, 85,
@@ -151,7 +146,7 @@ var jsPsychSelectionLearning = (function (jspsych) {
 					49, 67, 66, 82, 66, 80, 75, 80, 75, 77
 				],
 
-				// <!-- Q29 -->
+				// <!-- Q29: Lovelace -->
 				epistemicRatingsQ29: [
 					88, 53, 53, 63, 44, 55, 94, 44, 47, 0,
 					19, 100, 54, 24, 97, 83, 66, 76, 48, 55,
@@ -177,7 +172,7 @@ var jsPsychSelectionLearning = (function (jspsych) {
 					45, 49, 86, 49, 55, 59, 47, 78, 14, 36
 				],
 
-				// <!-- Q30 -->
+				// <!-- Q30: Turing -->
 				epistemicRatingsQ30: [
 					55, 88, 85, 85, 94, 50, 97, 53, 100, 62,
 					100, 100, 47, 95, 21, 78, 72, 86, 50, 74,
@@ -206,68 +201,78 @@ var jsPsychSelectionLearning = (function (jspsych) {
 
 			const trialPresentationSpace = $('#trial-presentation-space');
 
-			// Avatar indices randomized from 1 to 100
-			const randomizedAvatarIndexArray = jsPsych.randomization.shuffle([...Array(100).keys()]);
-
 			// Generate circles
 			const avatarCircleContainer = $('#avatar-grid');
 
+			// Avatar NUMBER randomized from 1 to 100; not index 0 to 99
+			const randomizedAvatarNumberArray = jsPsych.randomization.shuffle([...Array(100).keys()].map(x => x + 1));
+
+			// Create an array of labels, 50 for each party, and shuffle it
+			if (politicalManipulation == "present") {
+				var politicalAffiliationArray = jsPsych.randomization.shuffle(
+					new Array(50).fill('avatar-circle-democrat').concat(new Array(50).fill('avatar-circle-republican'))
+				);
+			};
+
+			// Generate circles
+			// i = the actual avatar INDEX
 			for (let i = 0; i < 100; i++) {
-				// let avatarIndex = randomizedAvatarIndexArray[i - 1];
-				const avatarCircle = $(`<div class='avatar-circle' id='circle${randomizedAvatarIndexArray[i] + 1}'></div>`);
+				if (politicalManipulation == "present") {
+					var avatarCircle = $(`<div class='avatar-circle ${politicalAffiliationArray[i]}' id='circle${randomizedAvatarNumberArray[i]}'></div>`);
+				} else {
+					var avatarCircle = $(`<div class='avatar-circle avatar-circle-none' id='circle${randomizedAvatarNumberArray[i]}'></div>`);
+				};
+
 				avatarCircleContainer.append(avatarCircle);
-
-				const circleId = $(`#circle${randomizedAvatarIndexArray[i] + 1}`);
-
-				const avatarPhoto = $(`<img class='avatar-photo' src='./avatars/avatar${randomizedAvatarIndexArray[i] + 1}.webp'>`);
+				const circleId = $(`#circle${randomizedAvatarNumberArray[i]}`);
+				const avatarPhoto = $(`<img class='avatar-photo' src='./avatars/avatar${randomizedAvatarNumberArray[i]}.webp'>`);
 				circleId.append(avatarPhoto);
 			};
 
-			// Pull ratings array depending on condition and trial statement
-			if (trial.epistemicMoralCondition == 'epistemic') {
-				var selectionRatings = {
-					0: selectionRatingsDict['epistemicRatingsQ12'],
-					1: selectionRatingsDict['epistemicRatingsQ26'],
-					2: selectionRatingsDict['epistemicRatingsQ27'],
-					3: selectionRatingsDict['epistemicRatingsQ29'],
-					4: selectionRatingsDict['epistemicRatingsQ30']
-				}
-			} else if (trial.epistemicMoralCondition == 'moral') {
-				var selectionRatings = {
-					0: selectionRatingsDict['moralRatingsQ12'],
-					1: selectionRatingsDict['moralRatingsQ26'],
-					2: selectionRatingsDict['moralRatingsQ27'],
-					3: selectionRatingsDict['moralRatingsQ29'],
-					4: selectionRatingsDict['moralRatingsQ30']
-				}
-			};
+			var selectionRatings = {
+				0: selectionRatingsDict['moralRatingsQ12'],
+				1: selectionRatingsDict['moralRatingsQ26'],
+				2: selectionRatingsDict['moralRatingsQ27'],
+				3: selectionRatingsDict['moralRatingsQ29'],
+				4: selectionRatingsDict['moralRatingsQ30']
+			}
 
 			// Pt. 3: Prompt
 			const samplingPromptContainer = $('#prompt-container');
 			samplingPromptContainer.html(`
-				<strong id="samplingPrompt">
-					CLICK ON THE PERSON WHOSE OPINION YOU WOULD LIKE TO READ NEXT
-				</strong><br>
-				(SCROLL TO VIEW MORE)<br>`
+				<strong id="samplingPrompt" style="text-transform: uppercase;">
+					Click on the person whose opinion you would like to read next	
+				</strong>
+				<br>
+				(SCROLL TO VIEW MORE)
+				<br>`
 			);
 
 			trial.button_html = trial.button_html || '<button class="jspsych-btn">%choice%</button>';
 
 			let trialDuration = "NA";
 			let avatarSelections = [];
+			let avatarPoliticalAffiliations = [];
 			let avatarPositionIndices = [];
 			let avatarPositionXIndices = [];
 			let avatarPositionYIndices = [];
 			let rtArray = [];
 			let sliderRatings = [];
 
-			for (let i = 0; i < randomizedAvatarIndexArray.length; i++) {
-				var newIndex = randomizedAvatarIndexArray[i];
-				sliderRatings.push(selectionRatings[trial.trialIndex][newIndex]);
+			// this takes the number of the avatar (e.g., #12) and uses the number (1 to 100) as an index to retrieve the rating number at that
+			// "index" from the selectionRatings array's trial.trialIndex element. If the avatar is 12, then we actually are retrieving the 11th (12 - 1) index
+			// However, the problem is that trial.trialIndex is not what we want. The order is not always 0 to 4 Roentgen, Akon, Gandhi, Lovelace, Turing.
+			for (let i = 0; i < randomizedAvatarNumberArray.length; i++) {
+				var yokedPseudoIndex = randomizedAvatarNumberArray[i] - 1; // this is the number of the avatar, already shuffled
+				console.log(trials);
+				console.log(trial.trialIndex);
+				console.log(trials[trial.trialIndex]);
+				sliderRatings.push(selectionRatings[trials[trial.trialIndex]][yokedPseudoIndex]); // this is not an index, but ok.
+				console.log(sliderRatings);
 			};
 
 			let start_time = (new Date()).getTime();
-			const initLearning = (avatarIndex) => {
+			const initLearning = (avatarNumber) => {
 				let tic = (new Date()).getTime();
 				$('#overlay').fadeIn();
 				trialPresentationSpace.empty();
@@ -281,13 +286,13 @@ var jsPsychSelectionLearning = (function (jspsych) {
 				// Add it to the presentation space
 				const avatarCircleSelection = $('<div></div>', {
 					class: 'avatar-circle',
-					id: `circle${avatarIndex}`
+					id: `circle${avatarNumber}`
 				}).appendTo(avatarContainer);
 
 				// Create copy of the chosen avatar photo
 				// Add it inside the avatar circle
 				$('<img>', {
-					src: `./avatars/avatar${avatarIndex}.webp`,
+					src: `./avatars/avatar${avatarNumber}.webp`,
 					class: 'avatar-photo'
 				}).appendTo(avatarCircleSelection);
 
@@ -295,16 +300,9 @@ var jsPsychSelectionLearning = (function (jspsych) {
 				let textDownRating = "NA";
 				let textUpRating = "NA";
 
-				if (trial.epistemicMoralCondition == "epistemic") {
-					ratingPrompt = "How likely do you think it is that this claim is true or false?";
-					textDownRating = "Definitely false";
-					textUpRating = "Definitely true";
-
-				} else if (trial.epistemicMoralCondition == "moral") {
-					ratingPrompt = "How morally good or morally bad do you think this action is?"
-					textDownRating = "Extremely morally bad";
-					textUpRating = "Extremely morally good";
-				};
+				ratingPrompt = "How morally good or morally bad do you think this action is?"
+				textDownRating = "Extremely morally bad";
+				textUpRating = "Extremely morally good";
 
 				const labelElement = $('<label>', {
 					for: "rating-slider",
@@ -314,7 +312,7 @@ var jsPsychSelectionLearning = (function (jspsych) {
 					name: 'rating-slider',
 					type: 'range',
 					class: 'jspsych-slider bipolar-clicked',
-					value: sliderRatings[avatarIndex],
+					value: sliderRatings[avatarNumber],
 					min: 0, max: 100, step: 1,
 					id: 'rating-slider',
 					oninput: `
@@ -340,7 +338,6 @@ var jsPsychSelectionLearning = (function (jspsych) {
 					})
 				);
 
-				// $(sliderRating).appendTo(trialFormat).fadeIn();
 				trialFormat.append(avatarContainer, sliderRating);
 				trialPresentationSpace.html(`<div></div>`);
 				trialPresentationSpace.append(trialFormat);
@@ -364,6 +361,7 @@ var jsPsychSelectionLearning = (function (jspsych) {
 					trialPresentationSpace.html(trialFormat);
 
 					trialFeedback.html(`
+						<hr></hr>
 						<p>Would you like to continue sampling?</p>
 						<div id="jspsych-selection-learning-btngroup" class="center-content block-center"></div>`
 					);
@@ -413,14 +411,13 @@ var jsPsychSelectionLearning = (function (jspsych) {
 						avatarCircleContainer.removeClass('fade-out-partial')
 							.addClass('fade-in');
 						reattachEventListeners();
-
 					});
 
 					$('#jspsych-selection-learning-button-1').on('click', function (e) {
 						endTrial();
 					});
 
-				}, 3000); //changed this from 5000 to 3000 for the pilot because it feels very long
+				}, 1000); //changed this from 5000 to 3000 for the pilot because it feels very long, now 1000
 			};
 
 			const clickHandlers = {};
@@ -428,14 +425,19 @@ var jsPsychSelectionLearning = (function (jspsych) {
 
 			for (let i = 1; i <= 100; i++) {
 				(function (i) {
-					let avatarIndex = i
+					let avatarNumber = i
 					let isLearningInProgress = false; // Flag variable
 					const clickHandler = function () {
 
-						if (currentSelection !== avatarIndex) {
+						if (currentSelection !== avatarNumber) {
 							// <!-- Find actual index of the avatar --> //
-							avatarSelections.push(avatarIndex); // Push circle index to selections
-							currentSelection = avatarIndex; // Update current selection
+							avatarSelections.push(avatarNumber); // Push circle index to selections
+							currentSelection = avatarNumber; // Update current selection
+
+							if (politicalManipulation == "present") {
+								let currentIndex = randomizedAvatarNumberArray.indexOf(avatarNumber);
+								avatarPoliticalAffiliations.push(politicalAffiliationArray[currentIndex]);
+							};
 
 							// <!-- Find positional index of the avatar --> //
 							// Assuming you have an ID or a class for the parent div
@@ -447,12 +449,12 @@ var jsPsychSelectionLearning = (function (jspsych) {
 								for (var i = 0; i < childDivs.length; i++) {
 									if (childDivs[i].id === subDivId) { // or use another property to identify the sub-div
 										return i; // Returns the index of the sub-div
-									}
-								}
+									};
+								};
 								return -1; // Return -1 if the sub-div is not found
-							}
+							};
 
-							let avatarPositionIndex = findSubDivIndex('circle' + avatarIndex);
+							let avatarPositionIndex = findSubDivIndex('circle' + avatarNumber);
 							avatarPositionIndices.push(avatarPositionIndex);
 
 							let avatarPositionXIndex = avatarPositionIndex % 4;
@@ -460,7 +462,7 @@ var jsPsychSelectionLearning = (function (jspsych) {
 
 							let avatarPositionYIndex = Math.floor(avatarPositionIndex / 4);
 							avatarPositionYIndices.push(avatarPositionYIndex);
-						}
+						};
 
 						if (!isLearningInProgress && !this.classList.contains('disabled')) {
 
@@ -473,19 +475,19 @@ var jsPsychSelectionLearning = (function (jspsych) {
 								};
 							};
 
-							$("#circle" + avatarIndex).css("background-color", "#bbb");  // Fades background color
-							$("#circle" + avatarIndex).find("img.avatar-photo").css("opacity", "0.5");  // Fades avatar photo
-							initLearning(avatarIndex);  // Start trial
+							$("#circle" + avatarNumber).css("background-color", "#bbb");  // Fades background color
+							$("#circle" + avatarNumber).find("img.avatar-photo").css("opacity", "0.5");  // Fades avatar photo
+							initLearning(avatarNumber);  // Start trial
 							isLearningInProgress = false;
-						}
+						};
 					};
 
-					$("#circle" + avatarIndex).on('click', clickHandler);
+					$("#circle" + avatarNumber).on('click', clickHandler);
 					clickHandlers[i] = clickHandler;
 
 					start_time = (new Date()).getTime(); // Store the start time
 				})(i);
-			}
+			};
 
 			// Function to reattach event listeners
 			function reattachEventListeners() {
@@ -493,9 +495,9 @@ var jsPsychSelectionLearning = (function (jspsych) {
 					$("#circle" + i)
 						.removeClass('disabled')
 						.on('click', clickHandlers[i]);
-				}
+				};
 				currentSelection = null; // Reset current selection for new phase
-			}
+			};
 
 			const endTrial = () => {
 				const final_time = (new Date()).getTime();

@@ -650,10 +650,21 @@
   height: 150px;
   border-radius: 50%;
   background-color: #777;
-  border: 5px solid #000;
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.avatar-circle-none {
+  border: 5px solid #000;
+}
+
+.avatar-circle-democrat {
+  border: 5px solid #1453DA;
+}
+
+.avatar-circle-republican {
+  border: 5px solid #E81B23;
 }
 
 .avatar-photo {

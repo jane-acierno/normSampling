@@ -1,3 +1,8 @@
+// Add curiosity yes/no TODO: in progress -- wait to receive actual numbers, make in big font
+// Debug for nulls
+// Create study 1 pipe 
+// Wait for Jordan correct redirect number 
+
 // DEFINE GLOBAL VARIABLES
 let timeline = [];
 
@@ -5,7 +10,7 @@ let timeline = [];
 const jsPsych = initJsPsych({
   use_webaudio: false,
   display_element: 'jspsych-target',
-  show_progress_bar: false,
+  show_progress_bar: true,
   default_iti: 0,
   on_finish: function (data) {
     jsPsych.data.displayData('csv');
@@ -16,22 +21,35 @@ const participantId = jsPsych.data.getURLVariable('PROLIFIC_PID');
 const studyId = jsPsych.data.getURLVariable('STUDY_ID');
 const sessionId = jsPsych.data.getURLVariable('SESSION_ID');
 
-const filename = `${participantId}` + "_" + `${studyId}` + "_" + `${sessionId}.csv`;
+const normManipulation = jsPsych.randomization.sampleWithoutReplacement(['injunctive', 'descriptive'], 1)[0];
+const politicalManipulation = jsPsych.randomization.sampleWithoutReplacement(['present', 'present'], 1)[0];
 
-// Randomize assignment of condition: epistemic / moral
-let epistemicMoralCondition = jsPsych.randomization.sampleWithoutReplacement(['epistemic', 'moral'], 1)[0];
-let individualDifferencesOrderCondition = jsPsych.randomization.sampleWithoutReplacement(['before', 'after'], 1)[0];
+
+// const filename = `${participantId}` + "_" + `${studyId}` + "_" + `${sessionId}.csv`;
+const filename = "debug.csv"
 
 // Random assignment of statements: pick 2 of 5 statements
-const trials = jsPsych.randomization.shuffle([0, 1, 2, 3, 4]).slice(0, 2);
+const trials = jsPsych.randomization.shuffle([0, 1, 2, 3, 4]).slice(0, 3);
+
+// Mapping of indices to names
+const indexToName = {
+  0: 'Roentgen',
+  1: 'Akon',
+  2: 'Gandhi',
+  3: 'Lovelace',
+  4: 'Turing'
+};
+
+// Creating the trialTargets array
+const trialTargets = trials.map(index => indexToName[index]);
 
 jsPsych.data.addProperties({
-  trials: trials,
+  trials: trialTargets,
   participantId: participantId,
   studyId: studyId,
   sessionId: sessionId,
-  epistemicMoralCondition: epistemicMoralCondition,
-  individualDifferencesOrderCondition: individualDifferencesOrderCondition
+  conditionNorm: normManipulation,
+  conditionPolitical: politicalManipulation
 });
 
 // Options
@@ -48,13 +66,13 @@ const iriResponses = [
 
 // Political Ideology
 const politicalResponses = [
-  "1 (Extremely liberal)",
+  "1 = Extremely liberal",
   "2",
   "3",
   "4",
   "5",
   "6",
-  "7 (Extremely conservative)",
+  "7 = Extremely conservative",
 ];
 
 // Experimenter Demand Effects
@@ -75,17 +93,6 @@ const ihResponses = [
   "5",
   "6",
   "7 = Very characteristic\nof me"
-];
-
-// Battery: need for closure, prosocial intentions, motivation
-const batResponses = [
-  "1 = Strongly disagree",
-  "2",
-  "3",
-  "4 = Neither agree nor disagree",
-  "5",
-  "6",
-  "7 = Strongly agree"
 ];
 
 // ENTER FULLSCREEN //
@@ -193,131 +200,11 @@ const consentForm = {
   }
 };
 
-timeline.push(consentForm);
+// timeline.push(consentForm);
 
 
-// EPISTEMIC INSTRUCTIONS //
-const instructionsEpistemic = {
-  type: jsPsychInstructions,
-  pages: [`
-        <h2><strong>Instructions (1/6)</strong></h2>
-        <p style="text-align: left;">
-          Welcome to this experiment! On the following pages, you will see a 
-          series of statements describing actions taken by prominent people, 
-          such as celebrities and historical figures.
-          <strong>All of the people in these statements are real people.</strong>
-        </p>
-        <p style="text-align: left;">
-          Your task is to assess the percentage of individuals in the United States 
-          who believe each statement to be true or false. In order to accomplish this, 
-          we will present you with the viewpoints of a sample that represents the entire nation.
-        </p>
-        <p style="text-align: left;">
-          <strong>
-            We are interested in both your perceptions of the beliefs held by the American public 
-            and your personal opinions.
-          </strong>
-        </p>`,
-
-    `<h2><strong>Instructions (2/6)</strong></h2>
-        <p style="text-align: left;">
-          In a previous study, we found out what percentage of people in the U.S. believe the statements 
-          you will see are true or false. For that study, we made sure to recruit a nationally representative 
-          sample so that the views of those participants should accurately represent the views of people 
-          in the <strong>U.S. more broadly</strong>.
-        </p>`,
-
-    `<h2><strong>Instructions (3/6)</strong></h2>
-        <p style="text-align: left;">
-          These statements are all structured the same way. They will make a claim about something a real 
-          person from history may have done, and then some of the outcomes of that supposed action. Your job is 
-          to tell us whether you think other people think the statement about that person is or is not true.
-        </p>
-
-        <p style="text-align: left;">
-          We will also ask you rate your curiosity about each person you read about. You should only say you are 
-          extremely curious for the statements you are <strong>absolutely</strong> most curious to learn more about.
-        </p>`,
-
-    `<h2><strong>Instructions (4/6)</strong></h2>
-        <p style="text-align: left;">
-          For example, if you saw the following statement:
-        </p>
-        <blockquote>
-          “Robert Oppenheimer developed the atomic bomb, which ended World War II 
-          but also enabled the devastation of Hiroshima and Nagasaki.”
-        </blockquote>
-        
-        <p style="text-align: left;">
-          Your job would be to evaluate what percentage of people believe that
-           the statement above is a <strong>true (or false) statement.</strong>
-        </p>`,
-
-    `<h2><strong>Instructions (5/6)</strong></h2>
-        <div class="quote">
-          <h3>Example Claim</h3>
-          <blockquote>
-            “Robert Oppenheimer developed the atomic bomb, which ended World War II 
-            but also enabled the devastation of Hiroshima and Nagasaki.”
-          </blockquote>
-        </div><br>
-        <label for="practice-slider-epistemic-estimate-percent">
-          As practice, please estimate what percentage of people in the U.S. believe 
-          that this claim is either true or false:<br><br>
-          <strong>
-            <code style='font-size: 10pt;' id="practice-slider-epistemic-estimate-percent-label">
-              <i class="fa-solid fa-arrow-left" id="fa-arrow-left"></i>&nbsp;(slide to adjust)&nbsp;<i class="fa-solid fa-arrow-right" id="fa-arrow-right"></i>
-            </code>
-          </strong>
-        </label>
-        <div style="position: relative;">
-          <input 
-            name="practice-slider-epistemic-estimate-percent" 
-            type="range" 
-            class="jspsych-slider incomplete" 
-            value="50" min="0" max="100" step="1" 
-            id="practice-slider-epistemic-estimate-percent"
-            oninput="
-              this.classList.remove('incomplete');
-              this.classList.add('bipolar-clicked');
-
-              $('#practice-slider-epistemic-estimate-percent-label').addClass('fade-out');
-
-              let rawRating = parseFloat(this.value);
-              let downRating = (100 - rawRating) + '%';
-              let upRating = rawRating + '%';
-            
-              $('#slider-downRating').text(downRating);
-              $('#slider-upRating').text(upRating);
-            "
-          >
-          <output style="position: absolute; left: 0%; font-size: 14pt;" id="slider-downRating">50%</output>
-          <output style="position: absolute; right: 0%; font-size: 14pt;" id="slider-upRating">50%</output><br>
-          <span class="jspsych-slider-left-anchor">
-            <strong>believe this is false</strong>
-          </span>
-          <span class="jspsych-slider-right-anchor">
-           <strong>believe this is true</strong>
-          </span>
-        </div>`,
-
-    `<h2><strong>Instructions (6/6)</strong></h2>
-        <p style="text-align: left;">
-          To help you estimate what other Americans believe, you will have the opportunity 
-          to see what people in that previous study thought about the statements. You will see 
-          randomly generated avatars representing people who participated in that study.
-        </p>
-        <p style="text-align: left;">
-          Every time you click on an avatar, you will see whether that 
-          <strong>one person believes the claim is true or false.</strong> 
-          You can view the opinions of as many people as you'd like before making your estimate.
-        </p>`
-  ],
-  show_clickable_nav: true,
-};
-
-// MORAL INSTRUCTIONS //
-const instructionsMoral = {
+// INSTRUCTIONS //
+const instructions = {
   type: jsPsychInstructions,
   pages: [
     `<h2><strong>Instructions (1/6)</strong></h2>
@@ -355,10 +242,9 @@ const instructionsMoral = {
       likely the statement about the person is true or false, just your opinion about what 
       you think other people think about the morality of the actions depicted.
     </p>
-
     <p style="text-align: left;">
-    We will also ask you rate your curiosity about each person you read about. You should only say you are 
-    extremely curious for the statements you are <strong>absolutely</strong> most curious to learn more about.
+      We will also ask you rate your curiosity about each person you read about. You should only say you are 
+      extremely curious for the statements you are <strong>absolutely</strong> most curious to learn more about.
     </p>`,
 
     `<h2><strong>Instructions (4/6)</strong></h2>
@@ -437,63 +323,11 @@ const instructionsMoral = {
   show_clickable_nav: true
 };
 
-const instructionsEpistemicComprehensionCheck = {
+const instructionsComprehensionCheck = {
   type: jsPsychSurveyMultiChoice,
   questions: [
     {
-      name: 'epistemic_comp_check_1',
-      prompt: '<strong><i class="fa-solid fa-circle-question"></i>&nbsp;&nbsp;For each statement, your task is to:</strong>',
-      options: [
-        "Estimate the percentage of people in the U.S. who believe the statement is true",
-        "Estimate the percentage of people in the U.S. who believe the actions that the historical figures took were morally good",
-        "Estimate the percentage of people in the U.S. who agree with me about the statement",
-        "Estimate the percentage of people in the U.S. who have heard this statement before"
-      ],
-      correct: 'Estimate the percentage of people in the U.S. who believe the statement is true',
-      hint: `That's not quite right. Remember, you are trying to estimate what percentage of people in the U.S. believe the statement is <strong>true</strong></em>.`,
-      required: true,
-    },
-    {
-      name: 'epistemic_comp_check_2',
-      prompt: `
-            <strong>
-              <i class="fa-solid fa-circle-question"></i>&nbsp;&nbsp;
-              You can view the opinions of as many people as you'd like before making your estimate.
-            </strong>`,
-      options: ["True", "False"],
-      correct: 'True',
-      hint: `That's not quite right. Remember, you will have the chance to view the opinions of <strong>as many people as you'd like</strong> before making your estimate.`,
-      required: true,
-    },
-  ],
-  preamble:
-    `<h2 style="text-align: center;">Instructions Review</h2> 
-    <p style="text-align: left;"> 
-      The experiment will begin on the next page.
-      
-      As a reminder, you will see a series of statements and be asked to estimate 
-      how many people think the claim is true (vs. false).<br><br>
-
-      We will first ask you a few questions about the statement you will see and what you think 
-      before you get to see any information about what others think. Then, you will see a page 
-      of many different avatars that each represent real participants' opinions 
-      about the claim you read.<br><br>
-
-      <strong>
-        You are free to review as many opinions as you would like before providing us 
-        your final estimate of the percentage of people in the U.S. who consider 
-        the outcome of the action to be true (vs. false).
-      </strong>
-
-      To make sure you fully understand the instructions for this study, please answer the questions below: 
-    </p>`,
-};
-
-const instructionsMoralComprehensionCheck = {
-  type: jsPsychSurveyMultiChoice,
-  questions: [
-    {
-      name: 'moral_comp_check_1',
+      name: 'comp_check_1',
       prompt: `
             <strong>
               <i class="fa-solid fa-circle-question"></i>&nbsp;&nbsp;
@@ -510,7 +344,7 @@ const instructionsMoralComprehensionCheck = {
       required: true,
     },
     {
-      name: 'moral_comp_check_2',
+      name: 'comp_check_2',
       prompt: `
             <strong>
               <i class="fa-solid fa-circle-question"></i>&nbsp;&nbsp;
@@ -562,207 +396,8 @@ const statements = [
   `"Alan Turing broke the Enigma code during World War II, which led to the development of mass surveillance technologies but helped end the war."`,
 ];
 
-
-// Epistemic Pre-Predictions: Self //
-function prePredictionsEpistemicSelf(trialIndex) {
-  return {
-    type: jsPsychSurveyHtmlForm,
-    preamble:
-      `<div class="quote">
-        <h3>Statement #` + (trialIndex + 1) + `</h3>
-        <blockquote>` + statements[trials[trialIndex]] + `</blockquote>
-      </div>
-      <p class="jspsych-survey-multi-choice-preamble">
-        Before you see what other people think about the statement, we want to know what you think:
-      </p><br><br>`,
-    html: `
-      <!-- Pre-Sampling Epistemic Claim Rating -->
-      
-      <input type="hidden" name="pre-slider-epistemic-claim-clicked" value="false">
-      <label for="pre-slider-epistemic-claim" class="jspsych-survey-multi-choice-question">
-        To what extent do you think this claim is true or false?
-      </label>
-      <div style="position: relative;">
-        <input 
-          name="pre-slider-epistemic-claim" 
-          type="range" 
-          class="jspsych-slider incomplete" 
-          value="50" min="0" max="100" step="1" 
-          id="pre-slider-epistemic-claim"
-          oninput="
-            this.classList.remove('incomplete');
-            this.classList.add('bipolar-clicked');
-            document.getElementsByName('pre-slider-epistemic-claim-clicked')[0].value = 'true';
-          "
-        >
-        <span class="jspsych-slider-left-anchor">Definitely false</span>
-        <span class="jspsych-slider-right-anchor">Definitely true</span>
-      </div><br><br><br>
-
-
-      <!-- Pre-Sampling Epistemic Plausible Rating -->
-
-      <input type="hidden" name="pre-slider-epistemic-plausible-clicked" value="false">
-      <label for="pre-slider-epistemic-plausible" class="jspsych-survey-multi-choice-question">
-        To what extent do you think the content of this claim is plausible?
-      </label>
-      <div style="position: relative;">
-        <input 
-          name="pre-slider-epistemic-plausible" 
-          type="range" 
-          class="jspsych-slider incomplete" 
-          value="50" min="0" max="100" step="1" 
-          id="pre-slider-epistemic-plausible"
-          oninput="
-            this.classList.remove('incomplete');
-            this.classList.add('bipolar-clicked');
-            document.getElementsByName('pre-slider-epistemic-plausible-clicked')[0].value = 'true';
-          "
-        >
-        <span class="jspsych-slider-left-anchor">Definitely implausible</span>
-        <span class="jspsych-slider-right-anchor">Definitely plausible</span>
-      </div><br><br><br>
-
-
-      <!-- Pre-Sampling Epistemic Curiosity -->
-
-      <input type="hidden" name="pre-slider-epistemic-curious-clicked" value="false">
-      <label for="pre-slider-epistemic-curious" class="jspsych-survey-multi-choice-question">
-        How curious are you to learn about what other people think about this statement?<br>
-
-      </label>
-      <div style="position: relative;">
-        <input
-          name="pre-slider-epistemic-curious" 
-          type="range" 
-          class="jspsych-slider incomplete" 
-          value="50" min="0" max="100" step="1" 
-          id="pre-slider-epistemic-curious"
-          oninput="
-            this.classList.remove('incomplete');
-            this.classList.add('unipolar-clicked');
-            document.getElementsByName('pre-slider-epistemic-curious-clicked')[0].value = 'true';
-          "
-        >
-        <span class="jspsych-slider-left-anchor">Not at all curious</span>
-        <span class="jspsych-slider-right-anchor">Extremely curious</span>
-      </div><br><br><br>`,
-    button_label: "Next",
-    request_response: true,
-    on_finish: function (data) {
-      let preSamplingEpistemicSelfData = data.response;
-
-      let pre_slider_epistemic_claim_check = preSamplingEpistemicSelfData['pre-slider-epistemic-claim-clicked'] === 'true' ? preSamplingEpistemicSelfData['pre-slider-epistemic-claim'] : null;
-      let pre_slider_epistemic_plausible_check = preSamplingEpistemicSelfData['pre-slider-epistemic-plausible-clicked'] === 'true' ? preSamplingEpistemicSelfData['pre-slider-epistemic-plausible'] : null;
-      let pre_slider_epistemic_curious_check = preSamplingEpistemicSelfData['pre-slider-epistemic-curious-clicked'] === 'true' ? preSamplingEpistemicSelfData['pre-slider-epistemic-curious'] : null;
-
-      preSamplingEpistemicSelfData = {
-        pre_slider_epistemic_claim: pre_slider_epistemic_claim_check,
-        pre_slider_epistemic_plausible: pre_slider_epistemic_plausible_check,
-        pre_slider_epistemic_curious: pre_slider_epistemic_curious_check
-      };
-
-      jsPsych.data
-        .getDataByTimelineNode(jsPsych.getCurrentTimelineNodeID())
-        .addToAll(preSamplingEpistemicSelfData);
-    }
-  };
-};
-
-// Epistemic Pre-Predictions: Other //
-function prePredictionsEpistemicOther(trialIndex) {
-  return {
-    type: jsPsychSurveyHtmlForm,
-    preamble: `
-          <div class="quote">
-            <h3>Statement #` + (trialIndex + 1) + `</h3>
-            <blockquote>` + statements[trials[trialIndex]] + `</blockquote>
-          </div>
-          <p class="jspsych-survey-multi-choice-preamble">
-            Before you see what other people think about the statement, we want to know what you think:
-          </p><br><br>`,
-    html: `
-          <!-- Pre-Sampling Epistemic Estimate Rating -->
-
-          <input type="hidden" name="pre-slider-epistemic-estimate-percent-clicked" value="false">
-          <label for="pre-slider-epistemic-estimate-percent" class="jspsych-survey-multi-choice-question">
-            What percentage of people in the U.S. do you think believe this claim is true vs. think this is false?
-          </label>
-          <div style="position: relative;">
-            <input 
-              name="pre-slider-epistemic-estimate-percent" 
-              type="range" 
-              class="jspsych-slider incomplete" 
-              value="50" min="0" max="100" step="1" 
-              id="pre-slider-epistemic-estimate-percent"
-              oninput="
-                this.classList.remove('incomplete');
-                this.classList.add('bipolar-clicked');
-
-                document.getElementsByName('pre-slider-epistemic-estimate-percent-clicked')[0].value = 'true';
-                
-                $('#pre-slider-epistemic-estimate-percent-label').addClass('fade-out');
-
-                let rawRating = parseFloat(this.value);
-                let downRating = (100 - rawRating) + '%';
-                let upRating = rawRating + '%';
-              
-                $('#slider-downRating').text(downRating);
-                $('#slider-upRating').text(upRating);
-              "
-            >
-            <output style="position: absolute; left: 0%; font-size: 14pt;" id="slider-downRating">50%</output>
-            <output style="position: absolute; right: 0%; font-size: 14pt;"id="slider-upRating">50%</output><br>
-            <span class="jspsych-slider-left-anchor">Believe this claim is false</span>
-            <span class="jspsych-slider-right-anchor">Believe this claim is true</span>
-          </div><br><br><br>
-
-
-          <!-- Pre-Sampling Epistemic Estimate Confidence -->
-
-          <input type="hidden" name="pre-slider-epistemic-confidence-clicked" value="false">
-          <label for="pre-slider-epistemic-confidence" class="jspsych-survey-multi-choice-question">
-            How confident are you in your answer?
-          </label>
-          <div style="position: relative;">
-            <input 
-              name="pre-slider-epistemic-confidence" 
-              type="range" 
-              class="jspsych-slider incomplete"
-              value="50" min="0" max="100" step="1" 
-              id="pre-slider-epistemic-confidence"
-              oninput="
-                this.classList.remove('incomplete');
-                this.classList.add('unipolar-clicked');
-
-                document.getElementsByName('pre-slider-epistemic-confidence-clicked')[0].value = 'true';
-              "
-            >
-            <span class="jspsych-slider-left-anchor">Not at all confident</span>
-            <span class="jspsych-slider-right-anchor">Completely confident</span>
-          </div><br><br><br>`,
-    button_label: 'Next',
-    request_response: true,
-    on_finish: function (data) {
-      let preSamplingEpistemicOtherData = data.response;
-
-      let pre_slider_epistemic_estimate_percent_check = preSamplingEpistemicOtherData['pre-slider-epistemic-estimate-percent-clicked'] === 'true' ? preSamplingEpistemicOtherData['pre-slider-epistemic-estimate-percent'] : null;
-      let pre_slider_epistemic_confidence_check = preSamplingEpistemicOtherData['pre-slider-epistemic-confidence-clicked'] === 'true' ? preSamplingEpistemicOtherData['pre-slider-epistemic-confidence'] : null;
-
-      preSamplingEpistemicOtherData = {
-        pre_slider_epistemic_estimate_percent: pre_slider_epistemic_estimate_percent_check,
-        pre_slider_epistemic_confidence: pre_slider_epistemic_confidence_check,
-      };
-
-      jsPsych.data
-        .getDataByTimelineNode(jsPsych.getCurrentTimelineNodeID())
-        .addToAll(preSamplingEpistemicOtherData);
-    }
-  };
-};
-
-// Moral Pre-Predictions: Self //
-function prePredictionsMoralSelf(trialIndex) {
+// Pre-Predictions (Self) //
+function prePredictionsSelf(trialIndex) {
   return {
     type: jsPsychSurveyHtmlForm,
     preamble: `
@@ -823,8 +458,7 @@ function prePredictionsMoralSelf(trialIndex) {
             <span class="jspsych-slider-left-anchor">Definitely morally bad</span>
             <span class="jspsych-slider-right-anchor">Definitely morally good</span>
           </div><br><br><br>
-
-
+          
           <!-- Pre-Sampling Moral Curiosity -->
 
           <input type="hidden" name="pre-slider-moral-curious-clicked" value="false">
@@ -857,6 +491,7 @@ function prePredictionsMoralSelf(trialIndex) {
       let pre_slider_moral_person_check = preSamplingMoralSelfData['pre-slider-moral-person-clicked'] === 'true' ? preSamplingMoralSelfData['pre-slider-moral-person'] : null;
       let pre_slider_moral_curious_check = preSamplingMoralSelfData['pre-slider-moral-curious-clicked'] === 'true' ? preSamplingMoralSelfData['pre-slider-moral-curious'] : null;
 
+
       preSamplingMoralSelfData = {
         pre_slider_moral_action: pre_slider_moral_action_check,
         pre_slider_moral_person: pre_slider_moral_person_check,
@@ -870,8 +505,8 @@ function prePredictionsMoralSelf(trialIndex) {
   };
 };
 
-// Moral Pre-Predictions: Other //
-function prePredictionsMoralOther(trialIndex) {
+// Pre-Predictions (Other) //
+function prePredictionsOther(trialIndex) {
   return {
     type: jsPsychSurveyHtmlForm,
     preamble: `
@@ -959,12 +594,13 @@ function prePredictionsMoralOther(trialIndex) {
   };
 };
 
-function selectionTask(trialIndex, epistemicMoralCondition) {
+function selectionTask(trialIndex) {
   return {
     type: jsPsychSelectionLearning,
     trialIndex: trialIndex,
     avatars: avatarDictionary,
-    epistemicMoralCondition: epistemicMoralCondition,
+    conditionNorm: normManipulation,
+    conditionPolitical: politicalManipulation,
     statement: statements[trials[trialIndex]],
     choices: [
       "<i class='fa-solid fa-rotate-left'></i>&nbsp;&nbsp;Continue sampling",
@@ -988,180 +624,8 @@ for (let i = 0; i < 100; i++) {
   selectionTask = Object.assign(selectionTask, { [avatarName]: avatar });
 };
 
-// Epistemic Post-Predictions: Self //
-function postPredictionsEpistemicSelf(trialIndex) {
-  return {
-    type: jsPsychSurveyHtmlForm,
-    preamble: `
-          <div class="quote">
-            <h3>Statement #` + (trialIndex + 1) + `</h3>
-            <blockquote>` + statements[trials[trialIndex]] + `</blockquote>
-          </div>
-          <p class="jspsych-survey-multi-choice-preamble">
-            Now that you've had the chance to see what other people 
-            think about the statement, we want to know what you think again.
-            Please answer the following questions:
-          </p><br><br>`,
-    html: `
-          <!-- Post-Sampling Epistemic Estimate Rating -->
-
-          <input type="hidden" name="post-slider-epistemic-claim-clicked" value="false">
-          <label for="post-slider-epistemic-claim" class="jspsych-survey-multi-choice-question">
-            To what extent do you think this claim is true or false?
-          </label>
-          <div style="position: relative;">
-            <input 
-              name="post-slider-epistemic-claim" 
-              type="range" 
-              class="jspsych-slider incomplete" 
-              value="50" min="0" max="100" step="1" 
-              id="post-slider-epistemic-claim"
-              oninput="
-                this.classList.remove('incomplete');
-                this.classList.add('bipolar-clicked');
-                document.getElementsByName('post-slider-epistemic-claim-clicked')[0].value = 'true';
-              "
-            >
-            <span class="jspsych-slider-left-anchor">Definitely false</span>
-            <span class="jspsych-slider-right-anchor">Definitely true</span>
-          </div><br><br><br>
-          
-
-          <!-- Post-Sampling Epistemic Plausible Rating -->
-
-          <input type="hidden" name="post-slider-epistemic-plausible-clicked" value="false">
-          <label for="post-slider-epistemic-plausible" class="jspsych-survey-multi-choice-question">
-            To what extent do you think the content of this claim is plausible?
-          </label>
-          <div style="position: relative;">
-            <input 
-              name="post-slider-epistemic-plausible" 
-              type="range" 
-              class="jspsych-slider incomplete" 
-              value="50" min="0" max="100" step="1" 
-              id="post-slider-epistemic-plausible"
-              oninput="
-                this.classList.remove('incomplete');
-                this.classList.add('bipolar-clicked');
-                document.getElementsByName('post-slider-epistemic-plausible-clicked')[0].value = 'true';
-              "
-            >
-            <span class="jspsych-slider-left-anchor">Definitely implausible</span>
-            <span class="jspsych-slider-right-anchor">Definitely plausible</span>
-          </div><br><br><br>`,
-    button_label: 'Next',
-    request_response: true,
-    on_finish: function (data) {
-      let postSamplingEpistemicSelfData = data.response;
-
-      let post_slider_epistemic_claim_check = postSamplingEpistemicSelfData['post-slider-epistemic-claim-clicked'] === 'true' ? postSamplingEpistemicSelfData['post-slider-epistemic-claim'] : null;
-      let post_slider_epistemic_plausible_check = postSamplingEpistemicSelfData['post-slider-epistemic-plausible-clicked'] === 'true' ? postSamplingEpistemicSelfData['post-slider-epistemic-plausible'] : null;
-
-      postSamplingEpistemicSelfData = {
-        post_slider_epistemic_claim: post_slider_epistemic_claim_check,
-        post_slider_epistemic_plausible: post_slider_epistemic_plausible_check
-      };
-
-      jsPsych.data
-        .getDataByTimelineNode(jsPsych.getCurrentTimelineNodeID())
-        .addToAll(postSamplingEpistemicSelfData);
-    }
-  };
-};
-
-// Epistemic Post-Predictions: Other //
-function postPredictionsEpistemicOther(trialIndex) {
-  return {
-    type: jsPsychSurveyHtmlForm,
-    preamble: `
-          <div class="quote">
-            <h3>Statement #` + (trialIndex + 1) + `</h3>
-            <blockquote>` + statements[trials[trialIndex]] + `</blockquote>
-          </div>
-          <p class="jspsych-survey-multi-choice-preamble">
-            Now that you've had the chance to see what other people 
-            think about the statement, we want to know what you think again.
-            Please answer the following questions:
-          </p><br><br>`,
-    html: `
-          <!-- Post-Sampling Epistemic Estimate -->
-
-          <input type="hidden" name="post-slider-epistemic-estimate-percent-clicked" value="false">
-          <label for="post-slider-epistemic-estimate-percent" class="jspsych-survey-multi-choice-question">
-            What percentage of people in the U.S. do you think believe this claim is true vs. think this is false?
-          </label>
-          <div style="position: relative;">
-            <input 
-              name="post-slider-epistemic-estimate-percent" 
-              type="range" 
-              class="jspsych-slider incomplete" 
-              value="50" min="0" max="100" step="1" 
-              id="post-slider-epistemic-estimate-percent"
-              oninput="
-                this.classList.remove('incomplete');
-                this.classList.add('bipolar-clicked');
-                document.getElementsByName('post-slider-epistemic-estimate-percent-clicked')[0].value = 'true';
-                $('#post-slider-epistemic-estimate-percent-label').addClass('fade-out');
-
-                let rawRating = parseFloat(this.value);
-                let downRating = (100 - rawRating) + '%';
-                let upRating = rawRating + '%';
-              
-                $('#slider-downRating').text(downRating);
-                $('#slider-upRating').text(upRating);
-              "
-            >
-            <output style="position: absolute; left: 0; font-size: 14pt;" id="slider-downRating">50%</output>
-            <output style="position: absolute; right: 0; font-size: 14pt;"id="slider-upRating">50%</output><br>
-            <span class="jspsych-slider-left-anchor">Believe this claim is false</span>
-            <span class="jspsych-slider-right-anchor">Believe this claim is true</span>
-          </div><br><br><br>
-
-
-          <!-- Post-Sampling Epistemic Estimate Confidence -->
-
-          <input type="hidden" name="post-slider-epistemic-confidence-clicked" value="false">
-          <label for="post-slider-epistemic-confidence" class="jspsych-survey-multi-choice-question">
-            How confident are you in your answer?
-          </label>
-          <div style="position: relative;">
-            <input 
-              name="post-slider-epistemic-confidence" 
-              type="range" 
-              class="jspsych-slider incomplete" 
-              value="50" min="0" max="100" step="1" 
-              id="post-slider-epistemic-confidence"
-              oninput="
-                this.classList.remove('incomplete');
-                this.classList.add('unipolar-clicked');
-                document.getElementsByName('post-slider-epistemic-confidence-clicked')[0].value = 'true';
-              "
-            >
-            <span class="jspsych-slider-left-anchor">Not at all confident</span>
-            <span class="jspsych-slider-right-anchor">Completely confident</span>
-          </div><br><br><br>`,
-    button_label: 'Next',
-    request_response: true,
-    on_finish: function (data) {
-      let postSamplingEpistemicOtherData = data.response;
-
-      let post_slider_epistemic_estimate_percent_check = postSamplingEpistemicOtherData['post-slider-epistemic-estimate-percent-clicked'] === 'true' ? postSamplingEpistemicOtherData['post-slider-epistemic-estimate-percent'] : null;
-      let post_slider_epistemic_confidence_check = postSamplingEpistemicOtherData['post-slider-epistemic-confidence-clicked'] === 'true' ? postSamplingEpistemicOtherData['post-slider-epistemic-confidence'] : null;
-
-      postSamplingEpistemicOtherData = {
-        post_slider_epistemic_estimate_percent: post_slider_epistemic_estimate_percent_check,
-        post_slider_epistemic_confidence: post_slider_epistemic_confidence_check
-      };
-
-      jsPsych.data
-        .getDataByTimelineNode(jsPsych.getCurrentTimelineNodeID())
-        .addToAll(postSamplingEpistemicOtherData);
-    }
-  };
-};
-
-// Moral Post-Predictions Self //
-function postPredictionsMoralSelf(trialIndex) {
+// Post-Predictions (Self) //
+function postPredictionsSelf(trialIndex) {
   return {
     type: jsPsychSurveyHtmlForm,
     preamble: `
@@ -1241,8 +705,8 @@ function postPredictionsMoralSelf(trialIndex) {
   };
 };
 
-// Moral Post-Predictions Other //
-function postPredictionsMoralOther(trialIndex) {
+// Post-Predictions (Other) //
+function postPredictionsOther(trialIndex) {
   return {
     type: jsPsychSurveyHtmlForm,
     preamble: `
@@ -1533,193 +997,32 @@ const ihQuestions = {
   }
 };
 
-// <!-- New individual diffs--> //
+// Instructions
+// timeline.push(instructions, instructionsComprehensionCheck);
 
-const batQuestions = {
-  type: jsPsychSurveyMultiChoice,
-  questions: [
-    {
-      name: "bat-1",
-      prompt: `
-        <p class="jspsych-survey-multi-choice-question">
-        My decisions are usually based on my concern for other people.</strong>
-        </p>`,
-      options: batResponses,
-      horizontal: true,
-    },
-    {
-      name: "bat-2",
-      prompt: `
-        <p class="jspsych-survey-multi-choice-question">
-        I choose a course of action that maximizes the help other people receive.</strong>
-        </p>`,
-      options: batResponses,
-      horizontal: true
-    },
-    {
-      name: "bat-3",
-      prompt: `
-        <p class="jspsych-survey-multi-choice-question">
-        I am motivated by social approval.</strong>
-        </p>`,
-      options: batResponses,
-      horizontal: true
-    },
-    {
-      name: "bat-4",
-      prompt: `
-        <p class="jspsych-survey-multi-choice-question">
-        I don't like situations that are uncertain.</strong>
-        </p>`,
-      options: batResponses,
-      horizontal: true
-    },
-    {
-      name: "bat-5",
-      prompt: `
-        <p class="jspsych-survey-multi-choice-question">
-        I think that having clear rules and order at work is essential for success.</strong>
-        </p>`,
-      options: batResponses,
-      horizontal: true
-    },
-    {
-      name: "bat-6",
-      prompt: `
-        <p class="jspsych-survey-multi-choice-question">
-        When I am confused about an important issue, I feel very upset.</strong>
-        </p>`,
-      options: batResponses,
-      horizontal: true
-    },
-    {
-      name: "bat-7",
-      prompt: `
-        <p class="jspsych-survey-multi-choice-question">
-        I dislike unpredictable situations.</strong>
-        </p>`,
-      options: batResponses,
-      horizontal: true
-    }
-  ],
-  randomize_question_order: true,
-  request_response: true,
-  preamble: `
-    <p class="jspsych-survey-multi-choice-preamble">
-      For each of the statements below, please indicate how much you agree 
-      or disagree with the statement.
-    </p>`,
-  on_finish: function (data) {
-    let batData = data.response;
-
-    batData = {
-      bat_1: batData['bat-1'],
-      bat_2: batData['bat-2'],
-      bat_3: batData['bat-3'],
-      bat_4: batData['bat-4'],
-      bat_5: batData['bat-5'],
-      bat_6: batData['bat-6'],
-      bat_7: batData['bat-7']
-    };
-
-    jsPsych.data
-      .getDataByTimelineNode(jsPsych.getCurrentTimelineNodeID())
-      .addToAll(batData);
-  }
-};
-
-// EPISTEMIC
-if (epistemicMoralCondition === 'epistemic') {
-
-  // Pre-Sampling Individual Differences
-  if (individualDifferencesOrderCondition == "before") {
-    timeline.push(
-      instructionsIndividualDifferences,
-      iriQuestions,
-      ihQuestions,
-      batQuestions
-    );
-  };
-
-  // Instructions
+// Sampling Task
+for (let trialIndex = 0; trialIndex < trials.length; trialIndex++) {
   timeline.push(
-    instructionsEpistemic,
-    instructionsEpistemicComprehensionCheck
+    // prePredictionsSelf(trialIndex),
+    // prePredictionsOther(trialIndex),
+    selectionTask(trialIndex),
+    postPredictionsSelf(trialIndex),
+    postPredictionsOther(trialIndex),
   );
-
-  // Sampling Task
-  for (let trialIndex = 0; trialIndex < trials.length; trialIndex++) {
-    timeline.push(
-      prePredictionsEpistemicSelf(trialIndex),
-      prePredictionsEpistemicOther(trialIndex),
-      selectionTask(trialIndex, epistemicMoralCondition),
-      postPredictionsEpistemicSelf(trialIndex),
-      postPredictionsEpistemicOther(trialIndex),
-    );
-    if (trialIndex != trials.length - 1) {
-      timeline.push(
-        newTrialPage(trialIndex)
-      );
-    };
-  };
-
-  // Post-Sampling Individual Differences
-  if (individualDifferencesOrderCondition == "after") {
-    timeline.push(
-      iriQuestions,
-      ihQuestions,
-      batQuestions
-    );
-  };
-  
-// MORAL
-} else if (epistemicMoralCondition === 'moral') {
-  
-  // Pre-Sampling Individual Differences
-  if (individualDifferencesOrderCondition == "before") {
-    timeline.push(
-      instructionsIndividualDifferences,
-      iriQuestions,
-      ihQuestions,
-      batQuestions
-    );
-  };
-
-  // Instructions
-  timeline.push(
-    instructionsMoral,
-    instructionsMoralComprehensionCheck
-  );
-
-  // Sampling Task
-  for (let trialIndex = 0; trialIndex < trials.length; trialIndex++) {
-    timeline.push(
-      prePredictionsMoralSelf(trialIndex),
-      prePredictionsMoralOther(trialIndex),
-      selectionTask(trialIndex, epistemicMoralCondition),
-      postPredictionsMoralSelf(trialIndex),
-      postPredictionsMoralOther(trialIndex),
-    );
-    if (trialIndex != trials.length - 1) {
-      timeline.push(
-        newTrialPage(trialIndex)
-      );
-    };
-  };
-
-  // Post-Sampling Individual Differences
-  if (individualDifferencesOrderCondition == "after") {
-    timeline.push(
-      iriQuestions,
-      ihQuestions,
-      batQuestions
-    );
+  if (trialIndex != trials.length - 1) {
+    timeline.push(newTrialPage(trialIndex));
   };
 };
 
+
+// Opportunity to learn the true percentage... (take from intro)
+// Instructional screen
+// Curiosity is regarding learning about information
+
+// Post-Sampling Individual Differences
+timeline.push(iriQuestions, ihQuestions);
 
 // DEMOGRAPHICS //
-
 const demographicsQuestions = {
   type: jsPsychSurveyHtmlForm,
   preamble:
@@ -1902,7 +1205,7 @@ const demographicsQuestions = {
             <input 
               type="radio" 
               id="gender-man" 
-              name="gender-man" 
+              name="gender" 
               value="Man" 
               class="demographics-gender incomplete"
               oninput="
@@ -1920,7 +1223,7 @@ const demographicsQuestions = {
             <input 
               type="radio" 
               id="gender-woman" 
-              name="gender-woman" 
+              name="gender" 
               value="Woman" 
               class="demographics-gender incomplete"
               oninput="
@@ -1938,7 +1241,7 @@ const demographicsQuestions = {
             <input 
               type="radio" 
               id="gender-non-binary" 
-              name="gender-non-binary" 
+              name="gender" 
               value="Non-binary" 
               class="demographics-gender incomplete"
               oninput="
@@ -1956,7 +1259,7 @@ const demographicsQuestions = {
             <input 
               type="radio" 
               id="gender-other" 
-              name="gender-other" 
+              name="gender" 
               value="Other" 
               class="demographics-gender incomplete"
               oninput="
@@ -1974,7 +1277,7 @@ const demographicsQuestions = {
             <input 
               type="radio" 
               id="gender-prefer-not" 
-              name="gender-prefer-not" 
+              name="gender" 
               value="Prefer not to disclose" 
               class="demographics-gender incomplete"
               oninput="
@@ -2002,7 +1305,7 @@ const demographicsQuestions = {
             <input 
               type="radio" 
               id="education-less-high-school" 
-              name="education-less-high-school" 
+              name="education" 
               value="Less than a high school diploma" 
               class="demographics-education incomplete"
               oninput="
@@ -2023,7 +1326,7 @@ const demographicsQuestions = {
             <input 
               type="radio" 
               id="education-high-school" 
-              name="education-high-school" 
+              name="education" 
               value="High school degree or equivalent (e.g. GED)" 
               class="demographics-education incomplete"
               oninput="
@@ -2044,7 +1347,7 @@ const demographicsQuestions = {
             <input 
               type="radio" 
               id="education-some-college" 
-              name="education-some-college" 
+              name="education" 
               value="Some college, no degree" 
               class="demographics-education incomplete"
               oninput="
@@ -2065,7 +1368,7 @@ const demographicsQuestions = {
             <input 
               type="radio" 
               id="education-associate" 
-              name="education-associate" 
+              name="education" 
               value="Associate Degree (e.g. AA, AS)" 
               class="demographics-education incomplete"
               oninput="
@@ -2086,7 +1389,7 @@ const demographicsQuestions = {
             <input 
               type="radio" 
               id="education-bachelors" 
-              name="education-bachelors" 
+              name="education" 
               value="Bachelor's Degree (e.g. BA, BS)" 
               class="demographics-education incomplete"
               oninput="
@@ -2107,7 +1410,7 @@ const demographicsQuestions = {
             <input 
               type="radio" 
               id="education-postgraduate" 
-              name="education-postgraduate" 
+              name="education" 
               value="Postgraduate Degree (e.g. Master's Degree, Professional Degree, Doctorate Degree)" 
               class="demographics-education incomplete"
               oninput="
@@ -2329,16 +1632,20 @@ const exitFullscreen = {
 
 timeline.push(exitFullscreen);
 
+// Choose from among these to relay via DataPipe
+const pilot1ExperimentId = "oA2BJCIcu8jQ";
+const debugExperimentId = "A6svaLMoS1gc";
+
 // DataPipe conclude data collection
 const save_data = {
   type: jsPsychPipe,
   action: "save",
-  experiment_id: "oA2BJCIcu8jQ",
+  experiment_id: debugExperimentId,
   filename: filename,
   data_string: () => jsPsych.data.get().csv(),
   on_finish: function (data) {
     function countdown(start, end) {
-      const timer = setInterval(function() {
+      const timer = setInterval(function () {
         if (start <= end) {
           clearInterval(timer);
         } else {
@@ -2347,7 +1654,7 @@ const save_data = {
         }
       }, 1000);
     }
-    
+
     countdown(5, 0);
 
     jsPsych.endExperiment(
