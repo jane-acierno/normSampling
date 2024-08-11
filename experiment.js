@@ -200,151 +200,178 @@ const consentForm = {
   }
 };
 
-// timeline.push(consentForm);
+timeline.push(consentForm);
 
 
-// INSTRUCTIONS //
-const instructions = {
+// DESCRIPTIVE INSTRUCTIONS //
+const instructionsDescriptive = {
+  type: jsPsychInstructions,
+  pages: [`
+        <h2><strong>Instructions (1/4)</strong></h2>
+        <p style="text-align: left;">
+          Welcome to this experiment! In a previous experiment we recruited a <strong> nationally representative 
+          sample of Americans </strong> to play a game. The game had only one round. People were matched in groups 
+          of four players.
+        </p>
+        <p style="text-align: left;">
+          The players each received 500 point endowments. 500 points is equal to $0.50. In the game there 
+          is a public pool. Players were allowed to contribute any amount of their endowment, from 
+          0 to 500 points, to the public pool. Any contributions that group members made were added together 
+          and doubled, then split evenly among the four players. Any amount that players kept for themselves 
+          was not doubled. For each player, the amount that gets redistributed from the common pool was 
+          added to the amount they kept, then translated into cash (500 points = $0.50) and paid out as 
+          a bonus payment at the end of the game.
+        </p>`,
+
+    `<h2><strong>Instructions (2/4)</strong></h2>
+        <p style="text-align: left;">
+          Today, you will get to view the contibutions of the previous study participants. 
+          For that study, we made sure to recruit a nationally representative 
+          sample so that the behavior of those participants should accurately represent the behavior of people 
+          in the <strong>U.S. more broadly</strong>.
+        </p>`,
+
+    `<h2><strong>Instructions (3/4)</strong></h2>
+        <p style="text-align: left;">
+          Your job is to estimate the average amount of money that people contribute to the common pool.
+        </p>`,
+
+    `<h2><strong>Instructions (4/4)</strong></h2>
+        <p style="text-align: left;">
+          To help you estimate how much other Americans contribute, you will have the opportunity 
+          to see the amounts that people in that previous study contributed. You will see 
+          randomly generated avatars representing people who participated in that study.
+        </p>
+        <p style="text-align: left;">
+          Every time you click on an avatar, you will see the amount that
+          <strong> that one person contributed.</strong> 
+          You can view the contributions of as many people as you'd like before making your estimate.
+        </p>`
+  ],
+  show_clickable_nav: true,
+};
+
+// INJUNCTIVE INSTRUCTIONS //
+const instructionsInjunctive = {
   type: jsPsychInstructions,
   pages: [
-    `<h2><strong>Instructions (1/6)</strong></h2>
+    `<h2><strong>Instructions (1/4)</strong></h2>
+        <p style="text-align: left;">
+          Welcome to this experiment! In a previous experiment we recruited a <strong> nationally representative 
+          sample of Americans </strong> to tell us their opinions about a game. The game would have only one round, 
+          and people would be matched in groups of four players.
+        </p>
+        <p style="text-align: left;">
+          The players would each received 500 point endowments. 500 points is equal to $0.50. In the game there 
+          would be a public pool. Players would be allowed to contribute any amount of their endowment, from 
+          0 to 500 points, to the public pool. Any contributions that group members made would be added together 
+          and doubled, then split evenly among the four players. Any amount that players keep for themselves 
+          would not doubled. For each player, the amount that gets redistributed from the common pool would be 
+          added to the amount they keep, then translated into cash (500 points = $0.50) and paid out as 
+          a bonus payment at the end of the game.
+        </p>`,
+
+    `<h2><strong>Instructions (2/4)</strong></h2>
     <p style="text-align: left;">
-      Welcome to this experiment! On the following pages, you will see a series of 
-      statements describing actions taken by prominent people, such as celebrities 
-      and historical figures. All of the people in these statements are real people.
-    </p>
-    <p style="text-align: left;">
-      Your task is to assess the percentage of individuals in the United States who 
-      consider it a morally good action. In order to accomplish this, we will present 
-      you with the viewpoints of a sample that represents the entire nation. 
-    </p>
-    <p style="text-align: left;">
-      <strong>
-        We are interested in both your perceptions of the beliefs held by the American public 
-        and your personal opinions.
-      </strong>
+      Today, you will get to view the opinions of the previous study participants on how they think people should 
+      play the game. For that study, we made sure to recruit a nationally representative 
+      sample so that the opinions of those participants should accurately represent the opinions of people 
+      in the <strong>U.S. more broadly</strong>.
     </p>`,
 
-    `<h2><strong>Instructions (2/6)</strong></h2>
+    `<h2><strong>Instructions (3/4)</strong></h2>
     <p style="text-align: left;">
-      We found out what percentage of people in the U.S. believe that each action you will see is 
-      considered morally good in a previous study. For that study, we made sure to recruit a 
-      nationally representative sample so that the views of those participants should accurately 
-      represent the views of people in the <strong>U.S. more broadly</strong>.
+          Your job is to estimate the average amount of money that <strong>people think others should contribute</strong> to the common pool.
     </p>`,
 
-    `<h2><strong>Instructions (3/6)</strong></h2>
-    <p style="text-align: left;">
-      These statements are all structured the same way. They will make a claim about something 
-      a real person from history may have done, and then some of the outcomes of that 
-      supposed action. Your job is to tell us whether you think other people think the actions 
-      depicted in the statements you see are morally good or not. You should not evaluate how 
-      likely the statement about the person is true or false, just your opinion about what 
-      you think other people think about the morality of the actions depicted.
-    </p>
-    <p style="text-align: left;">
-      We will also ask you rate your curiosity about each person you read about. You should only say you are 
-      extremely curious for the statements you are <strong>absolutely</strong> most curious to learn more about.
-    </p>`,
-
-    `<h2><strong>Instructions (4/6)</strong></h2>
-    <p style="text-align: left;">
-      For example, if you saw the following statement:
-    </p>
-    <blockquote>
-      “Robert Oppenheimer developed the atomic bomb, which ended World War II 
-      but also enabled the devastation of Hiroshima and Nagasaki.”
-    </blockquote>
-    <p style="text-align: left;">
-      Your job would be to evaluate what percentage of people you think believe that
-      the actions depicted in the above statement are <strong>morally good (or bad).</strong>
-    </p>`,
-
-    `<h2><strong>Instructions (5/6)</strong></h2>
-    <div class="quote">
-      <h3>Example Claim</h3>
-      <blockquote>
-        “Robert Oppenheimer developed the atomic bomb, which ended World War II 
-        but also enabled the devastation of Hiroshima and Nagasaki.”
-      </blockquote>
-    </div><br>
-    <label for="practice-slider-moral-estimate-percent">
-      As practice, please estimate what percentage of people in the U.S. believe 
-      that this action is morally good or morally bad:<br><br>
-      <strong>
-        <code style="font-size: 10pt;" id="practice-slider-moral-estimate-percent-label">
-          <i class="fa-solid fa-arrow-left" id="fa-arrow-left"></i>&nbsp;(slide to adjust)&nbsp;<i class="fa-solid fa-arrow-right" id="fa-arrow-right"></i>
-        </code>
-      </strong>
-    </label>
-    <div style="position: relative;">
-      <input 
-        name="practice-slider-moral-estimate-percent" 
-        type="range" 
-        class="jspsych-slider incomplete" 
-        value="50" min="0" max="100" step="1" 
-        id="practice-slider-moral-estimate-percent"
-        oninput="
-          this.classList.remove('incomplete');
-          this.classList.add('bipolar-clicked');
-          $('#practice-slider-moral-estimate-percent-label').addClass('fade-out');
-
-          let rawRating = parseFloat(this.value);
-          let downRating = (100 - rawRating) + '%';
-          let upRating = rawRating + '%';
-        
-          $('#slider-downRating').text(downRating);
-          $('#slider-upRating').text(upRating);
-        "
-      >
-      <output style="position: absolute; left: 0%; font-size: 14pt;" id="slider-downRating">50%</output>
-      <output style="position: absolute; right: 0%; font-size: 14pt; "id="slider-upRating">50%</output><br>
-      <span class="jspsych-slider-left-anchor">
-        <strong>believe this is morally bad</strong>
-      </span>
-      <span class="jspsych-slider-right-anchor">
-        <strong>believe this is morally good</strong>
-      </span>
-    </div>`,
-
-    `<h2><strong>Instructions (6/6)</strong></h2>
-    <p style="text-align: left;">
-      To help you estimate what other Americans believe, you will have the opportunity 
-      to see what people in that previous study thought about the statements. You will see 
-      randomly generated avatars representing people who participated in that study.
-    </p>
-    
-    <p style="text-align: left;">
-      Every time you click on an avatar, you will see whether that 
-      <strong>believes the claim is morally good or morally bad.</strong> 
-      You can view the opinions of as many people as you'd like before making your estimate.
-    </p>`
+    `<h2><strong>Instructions (4/4)</strong></h2>
+        <p style="text-align: left;">
+          To help you estimate how much other Americans think players should contribute, you will have the opportunity 
+          to see the amounts that people in that previous study said others should contribute. You will see 
+          randomly generated avatars representing people who participated in that study.
+        </p>
+        <p style="text-align: left;">
+          Every time you click on an avatar, you will see the amount that
+          <strong> that one person thinks others should contribute.</strong> 
+          You can view the opinions of as many people as you'd like before making your estimate.
+        </p>`
   ],
   show_clickable_nav: true
 };
 
-const instructionsComprehensionCheck = {
+
+const instructionsDescriptiveComprehensionCheck = {
   type: jsPsychSurveyMultiChoice,
   questions: [
     {
-      name: 'comp_check_1',
+      name: 'desc_comp_check_1',
+      prompt: '<strong><i class="fa-solid fa-circle-question"></i>&nbsp;&nbsp;For each statement, your task is to:</strong>',
+      options: [
+        "Estimate the average contribution amount of people in the U.S.",
+        "Estimate the average age of people in the U.S.",
+        "Estimate the percentage of people in the U.S. who agree with me about how to play the game",
+        "Estimate the percentage of people in the U.S. who have played this game before"
+      ],
+      correct: 'Estimate the average contribution amount of people in the U.S.',
+      hint: `That's not quite right. Remember, you are trying to estimate the <strong>average contribution amount</strong> of people in the U.S.`,
+      required: true,
+    },
+    {
+      name: 'desc_comp_check_2',
+      prompt: `
+            <strong>
+              <i class="fa-solid fa-circle-question"></i>&nbsp;&nbsp;
+              You can view the contributions of as many people as you'd like before making your estimate.
+            </strong>`,
+      options: ["True", "False"],
+      correct: 'True',
+      hint: `That's not quite right. Remember, you will have the chance to view the contributions of <strong>as many people as you'd like</strong> before making your estimate.`,
+      required: true,
+    },
+  ],
+  preamble:
+    `<h2 style="text-align: center;">Instructions Review</h2> 
+    <p style="text-align: left;"> 
+      The experiment will begin on the next page.
+      
+      As a reminder, you will see the contributions made by a nationally representative sample
+      of Americans and be asked to estimate the avergae contribution.<br><br>
+
+      We will first ask you a few questions about how much you expect people will contribute
+      before you get to see any information about what others actually contributed. Then, you will see a page 
+      of many different avatars that each represent real participants' contributions. <br><br>
+
+      <strong>
+        You are free to review as many contributions as you would like before providing us 
+        your final estimate of the avergae contribution amount.
+      </strong>
+
+      To make sure you fully understand the instructions for this study, please answer the questions below: 
+    </p>`,
+};
+
+const instructionsInjunctiveComprehensionCheck = {
+  type: jsPsychSurveyMultiChoice,
+  questions: [
+    {
+      name: 'inj_comp_check_1',
       prompt: `
             <strong>
               <i class="fa-solid fa-circle-question"></i>&nbsp;&nbsp;
               For each statement, your task is to:
             </strong>`,
       options: [
-        "Estimate the percentage of people in the U.S. who believe the statement is true",
-        "Estimate the percentage of people in the U.S. who believe the actions that the historical figures took were morally good",
-        "Estimate the percentage of people in the U.S. who agree with me about the statement",
-        "Estimate the percentage of people in the U.S. who have heard this statement before"
+        "Estimate the average age of people in the U.S.",
+        "Estimate the average amount that people in the U.S. think others should contribute",
+        "Estimate the percentage of people in the U.S. who agree with me about how to play the game",
+        "Estimate the percentage of people in the U.S. who have played this game before"
       ],
-      correct: 'Estimate the percentage of people in the U.S. who believe the actions that the historical figures took were morally good',
-      hint: `That's not quite right. Remember, you are trying to estimate what percentage of people in the U.S. believe the actions that the historical figures took were <strong>morally good</strong>.`,
+      correct: 'Estimate the average amount that people in the U.S. think others should contribute',
+      hint: `That's not quite right. Remember, you are trying to estimate the average amount that people in the U.S. <strong>think others should contribute</strong>.`,
       required: true,
     },
     {
-      name: 'comp_check_2',
+      name: 'inj_comp_check_2',
       prompt: `
             <strong>
               <i class="fa-solid fa-circle-question"></i>&nbsp;&nbsp;
@@ -364,22 +391,38 @@ const instructionsComprehensionCheck = {
     <p style="text-align: left;"> 
       The experiment will begin on the next page.
       
-      As a reminder, you will see a series of statements and be asked to estimate 
-      how many people think the claim is morally good (vs. morally bad).<br><br>
+      As a reminder, you will see the opinions of a nationally representative sample
+      of Americans on how much they think others should contribute, and you will be 
+      asked to estimate the avergae amount others think players should contribute.<br><br>
 
-      We will first ask you a few questions about the statement you will see and what you think 
-      before you get to see any information about what others think. Then, you will see a page 
-      of many different avatars that each represent real participants' opinions about 
-      the claim you read.<br><br>
+      We will first ask you a few questions about how much you expect other people think players should contribute
+      before you get to see previous participants' opinions. Then, you will see a page 
+      of many different avatars that each represent real participants' opinions about how much others should contribute. <br><br>
 
       <strong>
         You are free to review as many opinions as you would like before providing us 
-        your final estimate of the percentage of people in the U.S. who consider 
-        the outcome of the action to be morally good (vs. morally bad).
+        your final estimate of the avergae amount that other people think players should contribute.
       </strong>
 
       To make sure you fully understand the instructions for this study, please answer the questions below: 
     </p>`,
+};
+
+
+// PUSH
+if (normManipulation === 'injunctive') {
+
+  timeline.push(
+    instructionsInjunctive,
+    instructionsInjunctiveComprehensionCheck
+  );
+
+} else if (normManipulation === 'descriptive') {
+  
+  timeline.push(
+    instructionsDescriptive,
+    instructionsDescriptiveComprehensionCheck
+  );
 };
 
 // 12: Roentgen
