@@ -70,28 +70,29 @@ var jsPsychSelectionLearning = (function (jspsych) {
 			const selectionRatingsDict = {
 				// <!-- Q12: Roentgen -->
 				epistemicRatingsQ12: [
-					34, 100,  59,  89,  84,  50,  68,  86,  83,  68,
-					30,  79,   3,  93,  84, 100,  92,  78,  65,  89,
-					89,  77,  67, 100,  60,  68,  79,  63,  62,  80,
-					77,  75,  47,  61,  51,  60,  99, 100, 100,  79,
-					100, 47,  72,  83,  75,  49,  63,  71,  99,  45,
-					100, 68,  49,  77, 100,  47,  96,  33,  69,  92,
-					74,  48,  99,  48,  84,  87,  90,  47,  56,  95,
-					73,  64,  51,  92,  94,  84, 100,  77,  48,  82,
-					84,  48, 100,  85,  56,  57,  64,  71,  76,  66,
-					83,  34,  57,  55,  72, 100,  80,  75,  49, 100
+					  3,  30,  33,  34,  34,  45,  47,  47,  47,  47, 
+					 48,  48,  48,  48,  49,  49,  49,  50,  51,  51, 
+					 55,  56,  56,  57,  57,  59,  60,  60,  61,  62, 
+					 63,  63,  64,  64,  65,  66,  67,  68,  68,  68, 
+					 68,  69,  71,  71,  72,  72,  73,  74,  75,  75, 
+					 75,  76,  77,  77,  77,  77,  78,  79,  79,  79, 
+					 80,  80,  82,  83,  83,  83,  84,  84,  84,  84, 
+					 84,  85,  86,  87,  89,  89,  89,  90,  92,  92, 
+					 92,  93,  94,  95,  96,  99,  99,  99, 100, 100, 
+					100, 100, 100, 100, 100, 100, 100, 100, 100, 100
 				],
+
 				moralRatingsQ12: [
-					43, 52, 68, 66, 75, 89, 64, 73, 100, 68,
-					96, 89, 27, 100, 95, 91, 98, 72, 68, 78,
-					62, 100, 54, 100, 64, 58, 49, 61, 77, 77,
-					73, 82, 30, 60, 73, 57, 96, 100, 100, 97,
-					100, 46, 93, 71, 53, 100, 60, 51, 100, 74,
-					0, 52, 81, 82, 100, 3, 95, 53, 45, 91,
-					75, 85, 100, 80, 60, 86, 62, 65, 67, 78,
-					60, 47, 61, 75, 77, 78, 100, 78, 74, 82,
-					79, 42, 48, 52, 64, 63, 54, 51, 79, 58,
-					83, 57, 56, 4, 75, 82, 86, 63, 70, 84
+					  0,   3,   4,  27,  30,  42,  43,  45,  46,  47, 
+					 48,  49,  51,  51,  52,  52,  52,  53,  53,  54, 
+					 54,  56,  57,  57,  58,  58,  60,  60,  60,  60, 
+					 61,  61,  62,  62,  63,  63,  64,  64,  64,  65, 
+					 66,  67,  68,  68,  68,  70,  71,  72,  73,  73, 
+					 73,  74,  74,  75,  75,  75,  75,  77,  77,  77, 
+					 78,  78,  78,  78,  79,  79,  80,  81,  82,  82, 
+					 82,  82,  83,  84,  85,  86,  86,  89,  89,  91, 
+					 91,  93,  95,  95,  96,  96,  97,  98, 100, 100, 
+					100, 100, 100, 100, 100, 100, 100, 100, 100, 100
 				],
 
 				// <!-- Q26: Akon -->
@@ -278,8 +279,8 @@ var jsPsychSelectionLearning = (function (jspsych) {
 				trialPresentationSpace.empty();
 				trialPresentationSpace.fadeIn();
 
-				const trialFormat = $(`<div id="trial-format"></div>`);
-				const trialFeedback = $(`<div id="selection-buttons"></div>`);
+				const trialFormat     = $(`<div id="trial-format"></div>`);
+				const trialFeedback   = $(`<div id="selection-buttons"></div>`);
 				const avatarContainer = $('<div id="avatar-container"></div>')
 
 				// Create a new circle to hold the chosen avatar
@@ -288,6 +289,12 @@ var jsPsychSelectionLearning = (function (jspsych) {
 					class: 'avatar-circle',
 					id: `circle${avatarNumber}`
 				}).appendTo(avatarContainer);
+
+				if (politicalManipulation == "present") {
+					avatarCircleSelection.addClass(politicalAffiliationArray[randomizedAvatarNumberArray.indexOf(avatarNumber)]);
+				} else {
+					avatarCircleSelection.addClass('avatar-circle-none');
+				};
 
 				// Create copy of the chosen avatar photo
 				// Add it inside the avatar circle
@@ -401,9 +408,9 @@ var jsPsychSelectionLearning = (function (jspsych) {
 
 						// Fade the prompt back in
 						samplingPromptContainer.html(
-							`<p id="samplingPrompt">
-								<strong>CLICK ON THE PERSON WHOSE OPINION YOU WOULD LIKE TO READ NEXT</strong><br>
-								(SCROLL TO VIEW MORE)
+							`<p id="samplingPrompt" style="text-transform: uppercase;">
+								<strong>click on the person whose opinion you would like to read next</strong><br>
+								(scroll to view more)
 							</p>`
 						);
 
@@ -435,8 +442,9 @@ var jsPsychSelectionLearning = (function (jspsych) {
 							currentSelection = avatarNumber; // Update current selection
 
 							if (politicalManipulation == "present") {
-								let currentIndex = randomizedAvatarNumberArray.indexOf(avatarNumber);
-								avatarPoliticalAffiliations.push(politicalAffiliationArray[currentIndex]);
+								var currentIndex = randomizedAvatarNumberArray.indexOf(currentSelection);
+								var politicalAffiliaton = politicalAffiliationArray[currentIndex]
+								avatarPoliticalAffiliations.push(politicalAffiliaton);
 							};
 
 							// <!-- Find positional index of the avatar --> //
@@ -476,6 +484,14 @@ var jsPsychSelectionLearning = (function (jspsych) {
 							};
 
 							$("#circle" + avatarNumber).css("background-color", "#bbb");  // Fades background color
+							if (politicalManipulation == "present") {
+								if (politicalAffiliationArray[currentIndex] == "avatar-circle-democrat") {
+									$("#circle" + avatarNumber).css("border-color", "rgba(1, 67, 202, 0.5)");
+								} else if (politicalAffiliationArray[currentIndex] == "avatar-circle-republican") {
+									$("#circle" + avatarNumber).css("border-color", "rgba(232, 27, 35, 0.5)");
+								}
+							};
+							$("#circle" + avatarNumber).css("border-color", "0.5");
 							$("#circle" + avatarNumber).find("img.avatar-photo").css("opacity", "0.5");  // Fades avatar photo
 							initLearning(avatarNumber);  // Start trial
 							isLearningInProgress = false;

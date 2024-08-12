@@ -22,7 +22,7 @@ const studyId = jsPsych.data.getURLVariable('STUDY_ID');
 const sessionId = jsPsych.data.getURLVariable('SESSION_ID');
 
 const normManipulation = jsPsych.randomization.sampleWithoutReplacement(['injunctive', 'descriptive'], 1)[0];
-const politicalManipulation = jsPsych.randomization.sampleWithoutReplacement(['present', 'present'], 1)[0];
+const politicalManipulation = jsPsych.randomization.sampleWithoutReplacement(['present', 'absent'], 1)[0];
 
 
 // const filename = `${participantId}` + "_" + `${studyId}` + "_" + `${sessionId}.csv`;
@@ -299,7 +299,6 @@ const instructionsInjunctive = {
   show_clickable_nav: true
 };
 
-
 const instructionsDescriptiveComprehensionCheck = {
   type: jsPsychSurveyMultiChoice,
   questions: [
@@ -410,18 +409,18 @@ const instructionsInjunctiveComprehensionCheck = {
 
 
 // PUSH
-if (normManipulation === 'injunctive') {
+if (normManipulation === 'descriptive') {
 
   timeline.push(
-    instructionsInjunctive,
-    instructionsInjunctiveComprehensionCheck
+    instructionsDescriptive,
+    instructionsDescriptiveComprehensionCheck
   );
 
 } else if (normManipulation === 'descriptive') {
   
   timeline.push(
-    instructionsDescriptive,
-    instructionsDescriptiveComprehensionCheck
+    instructionsInjunctive,
+    instructionsInjunctiveComprehensionCheck
   );
 };
 

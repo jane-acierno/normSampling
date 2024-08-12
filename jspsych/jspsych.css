@@ -656,15 +656,15 @@
 }
 
 .avatar-circle-none {
-  border: 5px solid #000;
+  border: 10px solid #000;
 }
 
 .avatar-circle-democrat {
-  border: 5px solid #1453DA;
+  border: 10px solid rgba(1, 67, 202, 1);
 }
 
 .avatar-circle-republican {
-  border: 5px solid #E81B23;
+  border: 10px solid rgba(232, 27, 35, 1);
 }
 
 .avatar-photo {
