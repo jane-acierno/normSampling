@@ -25,6 +25,18 @@ var jsPsychSelectionLearning = (function (jspsych) {
 				type: jspsych.ParameterType.HTML_STRING,
 				default: defaultLabels
 			},
+			normManipulation: {
+				type: jspsych.ParameterType.HTML_STRING,
+				default: "descriptive"
+			},
+			politicalManipulation: {
+				type: jspsych.ParameterType.HTML_STRING,
+				default: "absent"
+			},			
+			contributionManipulation: {
+				type: jspsych.ParameterType.HTML_STRING,
+				default: "low"
+			},			
 			choices: {
 				type: jspsych.ParameterType.STRING,
 				pretty_name: "Choices",
@@ -49,9 +61,6 @@ var jsPsychSelectionLearning = (function (jspsych) {
 							Now you can see what other people think.
 							Click on an avatar to see that person's opinion on the following sentence:
 						</p>
-						<blockquote>
-							${trial.statement}
-						</blockquote>
 					</div>
 				</div>` +
 
@@ -66,177 +75,212 @@ var jsPsychSelectionLearning = (function (jspsych) {
 					<div class="grid-container" id="avatar-grid"></div>
 				</div>`;
 
-			// Ratings
+			// Pre-Shuffled Ratings
+			// 2 (Norm: Descriptive vs. Injunctive) x 2 (Politics: Democrat vs. Republican) x 2 (Contribution: High vs. Low)
 			const selectionRatingsDict = {
-				// <!-- Q12: Roentgen -->
-				epistemicRatingsQ12: [
-					  3,  30,  33,  34,  34,  45,  47,  47,  47,  47, 
-					 48,  48,  48,  48,  49,  49,  49,  50,  51,  51, 
-					 55,  56,  56,  57,  57,  59,  60,  60,  61,  62, 
-					 63,  63,  64,  64,  65,  66,  67,  68,  68,  68, 
-					 68,  69,  71,  71,  72,  72,  73,  74,  75,  75, 
-					 75,  76,  77,  77,  77,  77,  78,  79,  79,  79, 
-					 80,  80,  82,  83,  83,  83,  84,  84,  84,  84, 
-					 84,  85,  86,  87,  89,  89,  89,  90,  92,  92, 
-					 92,  93,  94,  95,  96,  99,  99,  99, 100, 100, 
-					100, 100, 100, 100, 100, 100, 100, 100, 100, 100
-				],
+				descriptiveDemocratLow: jsPsych.randomization.shuffle([
+					0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+					0, 0, 0, 0, 0, 0, 0, 1, 3, 25, 25, 25, 50, 50, 50, 50, 50, 50, 50, 50, 100, 100, 100, 100, 100, 100, 
+					100, 100, 100, 100, 100, 100, 100, 120, 125, 150, 150, 163, 175, 200, 200, 200, 200, 200, 200, 200, 
+					200, 215, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 
+					250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 
+					250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 
+					250, 250, 250, 250, 250, 250, 270, 300, 300, 300, 300, 300, 300, 300, 300, 300, 300, 300, 300, 300,
+					300, 350, 350, 400, 400, 400, 400, 400, 400, 400, 400, 400, 450, 450, 499, 500, 500, 500, 500, 500, 
+					500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 
+					500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 
+					500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 
+					500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 
+					500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 
+					500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 
+					500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 
+					500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500
+				]),
 
-				moralRatingsQ12: [
-					  0,   3,   4,  27,  30,  42,  43,  45,  46,  47, 
-					 48,  49,  51,  51,  52,  52,  52,  53,  53,  54, 
-					 54,  56,  57,  57,  58,  58,  60,  60,  60,  60, 
-					 61,  61,  62,  62,  63,  63,  64,  64,  64,  65, 
-					 66,  67,  68,  68,  68,  70,  71,  72,  73,  73, 
-					 73,  74,  74,  75,  75,  75,  75,  77,  77,  77, 
-					 78,  78,  78,  78,  79,  79,  80,  81,  82,  82, 
-					 82,  82,  83,  84,  85,  86,  86,  89,  89,  91, 
-					 91,  93,  95,  95,  96,  96,  97,  98, 100, 100, 
-					100, 100, 100, 100, 100, 100, 100, 100, 100, 100
-				],
+				descriptiveDemocratHigh: jsPsych.randomization.shuffle([
+					0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+					0, 0, 0, 0, 0, 0, 0, 1, 3, 25, 25, 25, 50, 50, 50, 50, 50, 50, 50, 50, 100, 100, 100, 100, 100, 100, 
+					100, 100, 100, 100, 100, 100, 100, 120, 125, 150, 150, 163, 175, 200, 200, 200, 200, 200, 200, 200, 
+					200, 215, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 
+					250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 
+					250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 
+					250, 250, 250, 250, 250, 250, 270, 300, 300, 300, 300, 300, 300, 300, 300, 300, 300, 300, 300, 300,
+					300, 350, 350, 400, 400, 400, 400, 400, 400, 400, 400, 400, 450, 450, 499, 500, 500, 500, 500, 500, 
+					500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 
+					500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 
+					500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 
+					500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 
+					500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 
+					500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 
+					500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 
+					500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500
+				]),
 
-				// <!-- Q26: Akon -->
-				epistemicRatingsQ26: [
-					87, 45, 100, 65, 100, 53, 48, 33, 4, 67,
-					52, 49, 66, 85, 72, 48, 19, 32, 39, 90,
-					60, 82, 83, 48, 50, 0, 63, 54, 68, 46,
-					0, 95, 90, 22, 51, 59, 46, 47, 47, 50,
-					54, 19, 66, 29, 88, 58, 68, 48, 26, 45,
-					48, 47, 53, 51, 4, 51, 40, 86, 6, 62,
-					39, 47, 52, 74, 58, 48, 47, 49, 77, 52,
-					50, 31, 31, 66, 54, 32, 44, 24, 47, 91,
-					37, 48, 47, 50, 52, 53, 49, 72, 84, 71,
-					47, 67, 71, 41, 36, 73, 51, 51, 48, 69
-				],
-				moralRatingsQ26: [
-					88, 19, 94, 76, 99, 50, 47, 58, 3, 55,
-					49, 31, 66, 48, 83, 49, 9, 41, 39, 52,
-					70, 79, 27, 0, 40, 49, 45, 51, 75, 52,
-					34, 42, 49, 62, 51, 61, 49, 47, 48, 47,
-					7, 15, 70, 3, 67, 55, 58, 50, 44, 66,
-					50, 47, 17, 67, 92, 62, 39, 99, 70, 25,
-					40, 44, 65, 16, 78, 53, 100, 46, 59, 48,
-					52, 38, 85, 29, 27, 35, 43, 20, 69, 83,
-					63, 21, 25, 18, 22, 6, 52, 74, 2, 14,
-					28, 63, 34, 42, 54, 73, 68, 57, 26, 100
-				],
+				descriptiveRepublicanLow: jsPsych.randomization.shuffle([
+					0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+					0, 0, 0, 0, 0, 1, 5, 10, 20, 25, 50, 50, 50, 75, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 
+					100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 150, 150, 150, 150, 175, 200, 200, 
+					200, 200, 200, 200, 200, 230, 235, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 
+					250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 275, 300, 300, 
+					300, 300, 300, 300, 300, 300, 300, 300, 300, 320, 325, 350, 350, 350, 350, 350, 400, 400, 400, 400, 
+					400, 400, 400, 400, 400, 400, 400, 400, 400, 400, 450, 500, 500, 500, 500, 500, 500, 500, 500, 500, 
+					500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 
+					500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 
+					500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 
+					500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 
+					500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 
+					500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 
+					500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500
+				]),
 
-				// <!-- Q27: Gandhi -->
-				epistemicRatingsQ27: [
-					73, 87, 79, 61, 82, 58, 81, 56, 72, 50,
-					74, 25, 80, 84, 79, 100, 85, 53, 66, 85,
-					67, 100, 100, 42, 66, 100, 100, 81, 100, 88,
-					92, 97, 79, 100, 97, 62, 84, 83, 88, 89,
-					87, 21, 100, 70, 49, 45, 100, 85, 100, 76,
-					81, 100, 100, 92, 79, 82, 96, 37, 85, 71,
-					85, 93, 86, 98, 94, 78, 93, 44, 100, 100,
-					70, 85, 71, 80, 96, 54, 48, 59, 31, 64,
-					96, 100, 100, 86, 97, 48, 78, 82, 65, 82,
-					32, 61, 100, 76, 68, 61, 78, 81, 46, 91
-				],
-				moralRatingsQ27: [
-					100, 86, 69, 44, 64, 71, 84, 56, 61, 51,
-					57, 51, 78, 82, 91, 100, 85, 60, 67, 94,
-					65, 87, 90, 58, 78, 64, 58, 76, 62, 89,
-					87, 97, 77, 78, 98, 47, 78, 96, 48, 81,
-					88, 86, 100, 78, 65, 69, 71, 73, 46, 56,
-					56, 100, 69, 92, 82, 94, 87, 62, 60, 82,
-					96, 90, 60, 99, 96, 79, 83, 65, 95, 70,
-					66, 90, 78, 84, 49, 54, 75, 80, 76, 74,
-					50, 72, 87, 71, 74, 55, 70, 67, 83, 100,
-					49, 67, 66, 82, 66, 80, 75, 80, 75, 77
-				],
+				descriptiveRepublicanHigh: jsPsych.randomization.shuffle([
+					0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+					0, 0, 0, 0, 0, 1, 5, 10, 20, 25, 50, 50, 50, 75, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 
+					100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 150, 150, 150, 150, 175, 200, 200, 
+					200, 200, 200, 200, 200, 230, 235, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 
+					250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 275, 300, 300, 
+					300, 300, 300, 300, 300, 300, 300, 300, 300, 320, 325, 350, 350, 350, 350, 350, 400, 400, 400, 400, 
+					400, 400, 400, 400, 400, 400, 400, 400, 400, 400, 450, 500, 500, 500, 500, 500, 500, 500, 500, 500, 
+					500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 
+					500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 
+					500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 
+					500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 
+					500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 
+					500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 
+					500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500
+				]),
 
-				// <!-- Q29: Lovelace -->
-				epistemicRatingsQ29: [
-					88, 53, 53, 63, 44, 55, 94, 44, 47, 0,
-					19, 100, 54, 24, 97, 83, 66, 76, 48, 55,
-					21, 74, 43, 78, 100, 85, 81, 59, 28, 100,
-					100, 64, 63, 86, 92, 73, 68, 23, 31, 72,
-					83, 94, 73, 77, 50, 88, 53, 52, 85, 100,
-					29, 50, 82, 100, 50, 50, 45, 69, 99, 100,
-					69, 11, 44, 71, 78, 90, 53, 48, 52, 83,
-					7, 67, 60, 49, 83, 47, 48, 52, 47, 56,
-					41, 94, 48, 67, 98, 87, 46, 55, 33, 28,
-					48, 91, 60, 47, 35, 65, 48, 48, 89, 44
-				],
-				moralRatingsQ29: [
-					33, 49, 49, 61, 32, 53, 95, 63, 73, 39,
-					48, 47, 83, 77, 52, 82, 55, 65, 49, 56,
-					46, 94, 43, 50, 50, 79, 100, 55, 52, 100,
-					73, 47, 63, 90, 50, 51, 51, 47, 53, 56,
-					81, 49, 54, 21, 51, 50, 51, 33, 86, 100,
-					58, 61, 82, 49, 25, 50, 61, 51, 83, 56,
-					68, 48, 43, 33, 67, 86, 67, 64, 51, 14,
-					8, 76, 92, 49, 100, 50, 67, 53, 49, 100,
-					63, 64, 59, 82, 97, 91, 46, 54, 24, 47,
-					45, 49, 86, 49, 55, 59, 47, 78, 14, 36
-				],
+				injunctiveDemocratLow: jsPsych.randomization.shuffle([
+					0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 42, 44, 49, 50, 50, 50, 50, 50, 92, 96, 97, 100, 100, 100, 100, 100,
+					100, 100, 100, 100, 100, 100, 101, 125, 125, 142, 150, 165, 176, 183, 200, 200, 200, 200, 200, 200, 
+					200, 200, 201, 203, 204, 217, 240, 240, 240, 249, 249, 250, 250, 250, 250, 250, 250, 250, 250, 250,
+					 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 
+					 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 
+					 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 251, 251, 251, 251, 252, 252, 253, 253, 
+					 254, 259, 263, 264, 271, 279, 286, 286, 300, 300, 300, 300, 300, 300, 300, 300, 301, 303, 304, 336, 
+					 350, 351, 356, 358, 360, 400, 400, 400, 400, 400, 401, 425, 426, 433, 448, 456, 460, 493, 500, 500, 
+					 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 
+					 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 
+					 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 
+					 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 
+					 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 
+					 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 
+					 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 
+					 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 
+					 500, 500, 500, 500, 500, 500, 500
+				]),
 
-				// <!-- Q30: Turing -->
-				epistemicRatingsQ30: [
-					55, 88, 85, 85, 94, 50, 97, 53, 100, 62,
-					100, 100, 47, 95, 21, 78, 72, 86, 50, 74,
-					100, 47, 70, 29, 87, 53, 85, 100, 71, 51,
-					64, 58, 62, 77, 62, 70, 67, 94, 48, 83,
-					58, 16, 76, 50, 95, 82, 73, 1, 100, 60,
-					95, 78, 94, 63, 99, 84, 79, 58, 85, 50,
-					94, 92, 93, 90, 2, 53, 48, 86, 100, 48,
-					52, 48, 55, 32, 79, 82, 88, 95, 67, 100,
-					28, 78, 62, 86, 74, 50, 98, 50, 61, 43,
-					51, 58, 63, 82, 81, 12, 69, 49, 64, 92
-				],
-				moralRatingsQ30: [
-					70, 89, 100, 34, 97, 80, 95, 4, 72, 63,
-					100, 100, 35, 89, 32, 28, 16, 83, 45, 70,
-					51, 60, 100, 52, 88, 57, 100, 100, 53, 50,
-					58, 63, 66, 80, 64, 69, 48, 52, 49, 83,
-					67, 89, 99, 50, 82, 77, 75, 63, 49, 64,
-					65, 100, 85, 8, 93, 88, 50, 70, 18, 49,
-					100, 89, 81, 81, 76, 49, 62, 55, 65, 14,
-					73, 48, 49, 49, 82, 54, 26, 73, 100, 79,
-					64, 85, 49, 86, 82, 49, 25, 19, 78, 26,
-					70, 61, 47, 95, 25, 65, 48, 5, 64, 16
-				]
+				injunctiveDemocratHigh: jsPsych.randomization.shuffle([
+					0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 42, 44, 49, 50, 50, 50, 50, 50, 92, 96, 97, 100, 100, 100, 100, 100,
+					100, 100, 100, 100, 100, 100, 101, 125, 125, 142, 150, 165, 176, 183, 200, 200, 200, 200, 200, 200, 
+					200, 200, 201, 203, 204, 217, 240, 240, 240, 249, 249, 250, 250, 250, 250, 250, 250, 250, 250, 250,
+					 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 
+					 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 
+					 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 251, 251, 251, 251, 252, 252, 253, 253, 
+					 254, 259, 263, 264, 271, 279, 286, 286, 300, 300, 300, 300, 300, 300, 300, 300, 301, 303, 304, 336, 
+					 350, 351, 356, 358, 360, 400, 400, 400, 400, 400, 401, 425, 426, 433, 448, 456, 460, 493, 500, 500, 
+					 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 
+					 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 
+					 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 
+					 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 
+					 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 
+					 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 
+					 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 
+					 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 
+					 500, 500, 500, 500, 500, 500, 500
+				]),
+
+				injunctiveRepublicanLow: jsPsych.randomization.shuffle([
+					0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 25, 25, 25, 40, 46, 50, 50, 50, 50, 50, 50, 50, 94, 97, 98,
+					99, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 101, 101, 110, 150, 150, 151, 152, 180, 180, 183, 
+					193, 194, 195, 200, 200, 200, 200, 200, 200, 206, 210, 214, 243, 248, 250, 250, 250, 250, 250, 250, 250,
+					250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 
+					250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 251, 251, 251, 251, 251, 251, 251, 251,
+					251, 252, 253, 254, 255, 256, 257, 257, 261, 261, 264, 266, 266, 267, 272, 275, 290, 296, 300, 300, 300,
+					300, 300, 301, 302, 303, 306, 307, 309, 320, 325, 327, 336, 342, 350, 351, 353, 361, 362, 363, 367, 369,
+					400, 400, 400, 400, 400, 400, 400, 402, 406, 471, 499, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 
+					500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 
+					500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 
+					500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 
+					500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 
+					500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 
+					500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500
+				]),
+				
+				injunctiveRepublicanHigh: jsPsych.randomization.shuffle([
+					0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 25, 25, 25, 40, 46, 50, 50, 50, 50, 50, 50, 50, 94, 97, 98,
+					99, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 101, 101, 110, 150, 150, 151, 152, 180, 180, 183, 
+					193, 194, 195, 200, 200, 200, 200, 200, 200, 206, 210, 214, 243, 248, 250, 250, 250, 250, 250, 250, 250,
+					250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 
+					250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 251, 251, 251, 251, 251, 251, 251, 251,
+					251, 252, 253, 254, 255, 256, 257, 257, 261, 261, 264, 266, 266, 267, 272, 275, 290, 296, 300, 300, 300,
+					300, 300, 301, 302, 303, 306, 307, 309, 320, 325, 327, 336, 342, 350, 351, 353, 361, 362, 363, 367, 369,
+					400, 400, 400, 400, 400, 400, 400, 402, 406, 471, 499, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 
+					500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 
+					500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 
+					500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 
+					500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 
+					500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 
+					500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500
+				]),
 			};
 
+			// Initialize trial presentation space
 			const trialPresentationSpace = $('#trial-presentation-space');
 
 			// Generate circles
 			const avatarCircleContainer = $('#avatar-grid');
 
+
 			// Avatar NUMBER randomized from 1 to 100; not index 0 to 99
-			const randomizedAvatarNumberArray = jsPsych.randomization.shuffle([...Array(100).keys()].map(x => x + 1));
+			// EXAMPLE: [1, 3, 2, ..., 100]
+			const randomizedAvatarNumberArray = jsPsych.randomization.shuffle([...Array(100).keys()].map (x => x + 1));
+
+			let politicalAffiliationArray;
+			let democratAffiliationArray;
+			let republicanAffiliationArray;
+
 
 			// Create an array of labels, 50 for each party, and shuffle it
 			if (politicalManipulation == "present") {
-				var politicalAffiliationArray = jsPsych.randomization.shuffle(
+
+				// Create an array populated with either 'avatar-circle-democrat' or 'avatar-circle-republican' depending on index
+				// EXAMPLE: ['avatar-circle-democrat', 'avatar-circle-democrat', 'avatar-circle-republican', ..., 'avatar-circle-democrat']
+				politicalAffiliationArray = jsPsych.randomization.shuffle(
 					new Array(50).fill('avatar-circle-democrat').concat(new Array(50).fill('avatar-circle-republican'))
 				);
-			};
 
-			// Generate circles
-			// i = the actual avatar INDEX
-			for (let i = 0; i < 100; i++) {
-				if (politicalManipulation == "present") {
-					var avatarCircle = $(`<div class='avatar-circle ${politicalAffiliationArray[i]}' id='circle${randomizedAvatarNumberArray[i]}'></div>`);
-				} else {
-					var avatarCircle = $(`<div class='avatar-circle avatar-circle-none' id='circle${randomizedAvatarNumberArray[i]}'></div>`);
+				// Split into two arrays: 50 for Democrats
+				// EXAMPLE: [0, 2, 4, ..., 98]
+				// Get the indices of 'avatar-circle-democrat'
+				democratAffiliationArray = politicalAffiliationArray.map((affiliation, index) => affiliation === 'avatar-circle-democrat' ? index : null).filter(index => index !== null);
+
+				// ...and 50 for Republicans
+				// EXAMPLE: [1, 3, 5, ..., 99]
+				republicanAffiliationArray = politicalAffiliationArray.map((affiliation, index) => affiliation === 'avatar-circle-republican' ? index : null).filter(index => index !== null);
+
+				
+				for (let i = 0; i < 100; i++) {
+					const avatarCircle = $(`<div class='avatar-circle clickable ${politicalAffiliationArray[i]}' id='circle${randomizedAvatarNumberArray[i]}'></div>`);
+	
+					avatarCircleContainer.append(avatarCircle);
+					const circleId = $(`#circle${randomizedAvatarNumberArray[i]}`);
+					const avatarPhoto = $(`<img class='avatar-photo' src='./avatars/avatar${randomizedAvatarNumberArray[i]}.webp'>`);
+					circleId.append(avatarPhoto);
 				};
 
-				avatarCircleContainer.append(avatarCircle);
-				const circleId = $(`#circle${randomizedAvatarNumberArray[i]}`);
-				const avatarPhoto = $(`<img class='avatar-photo' src='./avatars/avatar${randomizedAvatarNumberArray[i]}.webp'>`);
-				circleId.append(avatarPhoto);
+			} else if (politicalManipulation == "absent") {
+				
+				for (let i = 0; i < 100; i++) {
+					const avatarCircle = $(`<div class='avatar-circle clickable avatar-circle-none' id='circle${randomizedAvatarNumberArray[i]}'></div>`);
+
+					avatarCircleContainer.append(avatarCircle);
+					const circleId = $(`#circle${randomizedAvatarNumberArray[i]}`);
+					const avatarPhoto = $(`<img class='avatar-photo' src='./avatars/avatar${randomizedAvatarNumberArray[i]}.webp'>`);
+					circleId.append(avatarPhoto);
+				}
 			};
 
-			var selectionRatings = {
-				0: selectionRatingsDict['moralRatingsQ12'],
-				1: selectionRatingsDict['moralRatingsQ26'],
-				2: selectionRatingsDict['moralRatingsQ27'],
-				3: selectionRatingsDict['moralRatingsQ29'],
-				4: selectionRatingsDict['moralRatingsQ30']
-			}
 
 			// Pt. 3: Prompt
 			const samplingPromptContainer = $('#prompt-container');
@@ -251,30 +295,75 @@ var jsPsychSelectionLearning = (function (jspsych) {
 
 			trial.button_html = trial.button_html || '<button class="jspsych-btn">%choice%</button>';
 
-			let trialDuration = "NA";
-			let avatarSelections = [];
 			let avatarPoliticalAffiliations = [];
+			let avatarSelections = [];
 			let avatarPositionIndices = [];
 			let avatarPositionXIndices = [];
 			let avatarPositionYIndices = [];
-			let rtArray = [];
+
+			// Reaction times for clicking on boxes
+			let clickRtArray = [];
+
+			// Reaction times for viewing each box
+			let viewRtArray = [];
+
 			let sliderRatings = [];
 
 			// this takes the number of the avatar (e.g., #12) and uses the number (1 to 100) as an index to retrieve the rating number at that
 			// "index" from the selectionRatings array's trial.trialIndex element. If the avatar is 12, then we actually are retrieving the 11th (12 - 1) index
 			// However, the problem is that trial.trialIndex is not what we want. The order is not always 0 to 4 Roentgen, Akon, Gandhi, Lovelace, Turing.
 			for (let i = 0; i < randomizedAvatarNumberArray.length; i++) {
-				var yokedPseudoIndex = randomizedAvatarNumberArray[i] - 1; // this is the number of the avatar, already shuffled
-				console.log(trials);
-				console.log(trial.trialIndex);
-				console.log(trials[trial.trialIndex]);
-				sliderRatings.push(selectionRatings[trials[trial.trialIndex]][yokedPseudoIndex]); // this is not an index, but ok.
-				console.log(sliderRatings);
+				
+				switch (normManipulation) {
+					case "descriptive":
+						if (contributionManipulation == "low") {
+							var targetArrayDemocrat   = selectionRatingsDict['descriptiveDemocratLow'];
+							var targetArrayRepublican = selectionRatingsDict['descriptiveRepublicanLow'];
+						} else if (contributionManipulation == "high") {
+							var targetArrayDemocrat   = selectionRatingsDict['descriptiveDemocratHigh'];
+							var targetArrayRepublican = selectionRatingsDict['descriptiveRepublicanHigh'];
+						}
+						break;
+						
+					case "injunctive":
+						if (contributionManipulation == "low") {
+							var targetArrayDemocrat   = selectionRatingsDict['injunctiveDemocratLow'];
+							var targetArrayRepublican = selectionRatingsDict['injunctiveRepublicanLow'];
+						} else if (contributionManipulation == "high") {
+							var targetArrayDemocrat   = selectionRatingsDict['injunctiveDemocratHigh'];
+							var targetArrayRepublican = selectionRatingsDict['injunctiveRepublicanHigh'];
+						}
+						break;
+				};
+				
+				// if i is a democrat's index, push the jth index rating from the 50 democrat ratings
+
+				if (politicalManipulation == "present") {
+					var yokedIndex = randomizedAvatarNumberArray[i] - 1; // this is the number of the avatar, already shuffled
+					if (democratAffiliationArray.includes(yokedIndex)) {
+						sliderRatings.push(targetArrayDemocrat.shift());
+					} else if (republicanAffiliationArray.includes(yokedIndex)) {
+						sliderRatings.push(targetArrayRepublican.shift());
+					}
+				}
 			};
 
-			let start_time = (new Date()).getTime();
+			var advanceButton = `<button class="jspsych-btn"><i class='fa-solid fa-circle-check' style='color: green'></i>&nbsp;&nbsp;I'm all done</button>`
+			$('#jspsych-selection-advance-btngroup').append(
+				$(advanceButton).attr('id', 'jspsych-selection-advance-btn')
+					.data('choice', 1)
+					.addClass('jspsych-selection-advance-btn')
+					.on('click', function (e) {
+						endTrial();
+					})
+			);
+
+			let startTime = (new Date()).getTime();
+
 			const initLearning = (avatarNumber) => {
-				let tic = (new Date()).getTime();
+				// RT: START STOPWATCH (VIEW)
+				let viewTic = (new Date()).getTime();
+
 				$('#overlay').fadeIn();
 				trialPresentationSpace.empty();
 				trialPresentationSpace.fadeIn();
@@ -303,13 +392,9 @@ var jsPsychSelectionLearning = (function (jspsych) {
 					class: 'avatar-photo'
 				}).appendTo(avatarCircleSelection);
 
-				let ratingPrompt = "NA";
-				let textDownRating = "NA";
-				let textUpRating = "NA";
-
-				ratingPrompt = "How morally good or morally bad do you think this action is?"
-				textDownRating = "Extremely morally bad";
-				textUpRating = "Extremely morally good";
+				const ratingPrompt = "How morally good or morally bad do you think this action is?"
+				const textDownRating = "Extremely morally bad";
+				const textUpRating = "Extremely morally good";
 
 				const labelElement = $('<label>', {
 					for: "rating-slider",
@@ -353,8 +438,6 @@ var jsPsychSelectionLearning = (function (jspsych) {
 				avatarCircleContainer.addClass('fade-out-partial');
 
 				setTimeout(function () {
-					const learningStartTime = (new Date()).getTime();
-
 					let buttons = [];
 					if (Array.isArray(trial.button_html)) {
 						if (trial.button_html.length == trial.choices.length) {
@@ -390,16 +473,19 @@ var jsPsychSelectionLearning = (function (jspsych) {
 									// hide button
 									$('.jspsych-selection-learning-button').hide();
 									let choice = $('#' + this.id).data('choice');
-
-									const curTime = Date.now();
-									const learningStartRT = curTime - learningStartTime;
 								})
 						);
 					};
 					$('#jspsych-selection-learning-button-0').on('click', function (e) {
-						let toc = (new Date()).getTime();
-						let rt = toc - tic;
-						rtArray.push(rt);
+						let viewToc = (new Date()).getTime();
+						let viewRt = viewToc - viewTic;
+						viewRtArray.push(viewRt);
+
+						// RT: STOP STOPWATCH (CLICK)
+						let clickToc = (new Date()).getTime();
+						let clickRt = clickToc - (startTime + clickRtArray.reduce((acc, curr) => acc + curr, 0) + viewRtArray.reduce((acc, curr) => acc + curr, 0));
+						clickRtArray.push(clickRt);
+						
 						$('#overlay').fadeOut();
 						trialPresentationSpace.html(`<div id="trial-format"></div><div id="selection-format"></div>`);
 						trialPresentationSpace.empty().hide();
@@ -421,6 +507,23 @@ var jsPsychSelectionLearning = (function (jspsych) {
 					});
 
 					$('#jspsych-selection-learning-button-1').on('click', function (e) {
+						// RT: STOP STOPWATCH (VIEW)
+						let viewToc = (new Date()).getTime();
+						let viewRt = viewToc - viewTic;
+						viewRtArray.push(viewRt);
+
+						// RT: STOP STOPWATCH (CLICK)
+						let clickToc = (new Date()).getTime();
+						if (clickRtArray.length === 0) {
+							var clickRt = clickToc - (startTime + viewRtArray.reduce((acc, curr) => acc + curr, 0));
+						}
+						else { 
+							var clickRt = clickToc - (startTime + clickRtArray.reduce((acc, curr) => acc + curr, 0) + viewRtArray.reduce((acc, curr) => acc + curr, 0));
+						}
+
+						clickRtArray.push(clickRt);
+						console.log(clickRtArray);
+
 						endTrial();
 					});
 
@@ -501,7 +604,7 @@ var jsPsychSelectionLearning = (function (jspsych) {
 					$("#circle" + avatarNumber).on('click', clickHandler);
 					clickHandlers[i] = clickHandler;
 
-					start_time = (new Date()).getTime(); // Store the start time
+					startTime = (new Date()).getTime(); // Store the start time
 				})(i);
 			};
 
@@ -516,15 +619,19 @@ var jsPsychSelectionLearning = (function (jspsych) {
 			};
 
 			const endTrial = () => {
-				const final_time = (new Date()).getTime();
-				trialDuration = final_time - start_time;
+				const finalTime = (new Date()).getTime();
+				const taskDuration = finalTime - startTime;
 				const trial_data = {
 					"avatar_selections": avatarSelections.join(','),
 					"avatar_position_indices": avatarPositionIndices.join(','),
 					"avatar_position_x_indices": avatarPositionXIndices.join(','),
 					"avatar_position_y_indices": avatarPositionYIndices.join(','),
-					"rt_array": rtArray.join(','),
-					"trial_duration": trialDuration
+					"all_political_avatars": politicalAffiliationArray,
+					"democrat_avatars": democratAffiliationArray,
+					"republican_avatars": republicanAffiliationArray,
+					"click_rt_array": clickRtArray.join(','),
+					"view_rt_array": viewRtArray.join(','),
+					"task_duration": taskDuration
 				};
 				jsPsych.finishTrial(trial_data);
 			};

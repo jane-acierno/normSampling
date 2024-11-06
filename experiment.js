@@ -21,35 +21,30 @@ const participantId = jsPsych.data.getURLVariable('PROLIFIC_PID');
 const studyId = jsPsych.data.getURLVariable('STUDY_ID');
 const sessionId = jsPsych.data.getURLVariable('SESSION_ID');
 
+// Random assignment of manipulations
+// Injunctive vs. Descriptive
 const normManipulation = jsPsych.randomization.sampleWithoutReplacement(['injunctive', 'descriptive'], 1)[0];
+
+// Political vs. Non-Political
 const politicalManipulation = jsPsych.randomization.sampleWithoutReplacement(['present', 'absent'], 1)[0];
+
+// High vs. Low Contribution
+const contributionManipulation = jsPsych.randomization.sampleWithoutReplacement(['high', 'low'], 1)[0];
+
+// Concatenate individual manipulation outcomes to create composi te condition variable
+const condition = normManipulation + "_" + politicalManipulation + "_" + contributionManipulation;
 
 
 // const filename = `${participantId}` + "_" + `${studyId}` + "_" + `${sessionId}.csv`;
-const filename = "debug.csv"
-
-// Random assignment of statements: pick 2 of 5 statements
-const trials = jsPsych.randomization.shuffle([0, 1, 2, 3, 4]).slice(0, 3);
-
-// Mapping of indices to names
-const indexToName = {
-  0: 'Roentgen',
-  1: 'Akon',
-  2: 'Gandhi',
-  3: 'Lovelace',
-  4: 'Turing'
-};
-
-// Creating the trialTargets array
-const trialTargets = trials.map(index => indexToName[index]);
+const filename = "debug3.csv"
 
 jsPsych.data.addProperties({
-  trials: trialTargets,
   participantId: participantId,
   studyId: studyId,
   sessionId: sessionId,
   conditionNorm: normManipulation,
-  conditionPolitical: politicalManipulation
+  conditionPolitical: politicalManipulation,
+  conditionContribution: contributionManipulation
 });
 
 // Options
@@ -409,44 +404,26 @@ const instructionsInjunctiveComprehensionCheck = {
 
 
 // PUSH
-if (normManipulation === 'descriptive') {
+// if (normManipulation === 'descriptive') {
 
-  timeline.push(
-    instructionsDescriptive,
-    instructionsDescriptiveComprehensionCheck
-  );
+//   timeline.push(
+//     instructionsDescriptive,
+//     instructionsDescriptiveComprehensionCheck
+//   );
 
-} else if (normManipulation === 'descriptive') {
+// } else if (normManipulation === 'injunctive') {
   
-  timeline.push(
-    instructionsInjunctive,
-    instructionsInjunctiveComprehensionCheck
-  );
-};
-
-// 12: Roentgen
-// 26: Akon
-// 27: Gandhi
-// 29: Lovelace
-// 30: Turing
-
-const statements = [
-  `"Wilhelm Roentgen invented X-rays, which revolutionized medical imaging but increased radiation exposure."`,
-  `"Akon created the 'Akon Lighting Africa' initiative, which initiated renewable energy projects in Africa but supported authoritarian regimes."`,
-  `"Mahatma Gandhi led nonviolent resistance against British colonial rule, which led to the partition of the country but brought about political change."`,
-  `"Ada Lovelace pioneered computer programming, which led to the displacement of manual laborers but laid the foundation for modern computing."`,
-  `"Alan Turing broke the Enigma code during World War II, which led to the development of mass surveillance technologies but helped end the war."`,
-];
+//   timeline.push
+//     instructionsInjunctive,
+//     instructionsInjunctiveComprehensionCheck
+//   );
+// };
 
 // Pre-Predictions (Self) //
-function prePredictionsSelf(trialIndex) {
+function prePredictionsSelf() {
   return {
     type: jsPsychSurveyHtmlForm,
     preamble: `
-          <div class="quote">
-            <h3>Statement #` + (trialIndex + 1) + `</h3>
-            <blockquote>` + statements[trials[trialIndex]] + `</blockquote>
-          </div>
           <p class="jspsych-survey-multi-choice-preamble">
             Before you see what other people think about 
             the statement, we want to know what you think:
@@ -465,6 +442,12 @@ function prePredictionsSelf(trialIndex) {
               class="jspsych-slider incomplete" 
               value="50" min="0" max="100" step="1" 
               id="pre-slider-moral-action"
+              onmousedown="
+                this.classList.remove('incomplete');
+                this.classList.add('bipolar-clicked');
+
+                document.getElementsByName('pre-slider-moral-action-clicked')[0].value = 'true';
+              "
               oninput="
                 this.classList.remove('incomplete');
                 this.classList.add('bipolar-clicked');
@@ -472,8 +455,14 @@ function prePredictionsSelf(trialIndex) {
                 document.getElementsByName('pre-slider-moral-action-clicked')[0].value = 'true';
               "
             >
-            <span class="jspsych-slider-left-anchor">Definitely morally bad</span>
-            <span class="jspsych-slider-right-anchor">Definitely morally good</span>
+            <div class="slider-anchors">
+              <span class="jspsych-slider-left-anchor">
+                Definitely morally bad
+              </span>
+              <span class="jspsych-slider-right-anchor">
+                Definitely morally good
+              </span>
+            </div>
           </div><br><br><br>
 
 
@@ -490,6 +479,12 @@ function prePredictionsSelf(trialIndex) {
               class="jspsych-slider incomplete" 
               value="50" min="0" max="100" step="1" 
               id="pre-slider-moral-person"
+              onmousedown="
+                this.classList.remove('incomplete');
+                this.classList.add('bipolar-clicked');
+
+                document.getElementsByName('pre-slider-moral-person-clicked')[0].value = 'true';
+              "
               oninput="
                 this.classList.remove('incomplete');
                 this.classList.add('bipolar-clicked');
@@ -497,8 +492,14 @@ function prePredictionsSelf(trialIndex) {
                 document.getElementsByName('pre-slider-moral-person-clicked')[0].value = 'true';
               "
             >
-            <span class="jspsych-slider-left-anchor">Definitely morally bad</span>
-            <span class="jspsych-slider-right-anchor">Definitely morally good</span>
+            <div class="slider-anchors">
+              <span class="jspsych-slider-left-anchor">
+                Definitely morally bad
+              </span>
+              <span class="jspsych-slider-right-anchor">
+                Definitely morally good
+              </span>
+            </div>
           </div><br><br><br>
           
           <!-- Pre-Sampling Moral Curiosity -->
@@ -514,6 +515,12 @@ function prePredictionsSelf(trialIndex) {
               class="jspsych-slider incomplete" 
               value="50" min="0" max="100" step="1" 
               id="pre-slider-moral-curious"
+              onmousedown="
+                this.classList.remove('incomplete');
+                this.classList.add('unipolar-clicked');
+
+                document.getElementsByName('pre-slider-moral-curious-clicked')[0].value = 'true';
+              "
               oninput="
                 this.classList.remove('incomplete');
                 this.classList.add('unipolar-clicked');
@@ -521,8 +528,14 @@ function prePredictionsSelf(trialIndex) {
                 document.getElementsByName('pre-slider-moral-curious-clicked')[0].value = 'true';
               "
             >
-            <span class="jspsych-slider-left-anchor">Not at all curious</span>
-            <span class="jspsych-slider-right-anchor">Extremely curious</span>
+            <div class="slider-anchors">
+              <span class="jspsych-slider-left-anchor">
+                Not at all curious
+              </span>
+              <span class="jspsych-slider-right-anchor">
+                Extremely curious
+              </span>
+            </div>
           </div><br><br><br>`,
     button_label: 'Next',
     request_response: true,
@@ -548,14 +561,10 @@ function prePredictionsSelf(trialIndex) {
 };
 
 // Pre-Predictions (Other) //
-function prePredictionsOther(trialIndex) {
+function prePredictionsOther() {
   return {
     type: jsPsychSurveyHtmlForm,
     preamble: `
-          <div class="quote">
-            <h3>Statement #` + (trialIndex + 1) + `</h3>
-            <blockquote>` + statements[trials[trialIndex]] + `</blockquote>
-          </div>
           <p class="jspsych-survey-multi-choice-preamble">
             Before you see what other people think about the statement, we want to know what you think:
           </p><br><br>`,
@@ -573,6 +582,18 @@ function prePredictionsOther(trialIndex) {
               class="jspsych-slider incomplete" 
               value="50" min="0" max="100" step="1" 
               id="pre-slider-moral-estimate-percent"
+                            onmousedown="
+                this.classList.remove('incomplete');
+                this.classList.add('bipolar-clicked');
+
+                document.getElementsByName('pre-slider-moral-estimate-percent-clicked')[0].value = 'true';
+
+                let rawRating = parseFloat(this.value);
+                let downRating = (100 - rawRating) + '%';
+                let upRating = rawRating + '%';
+              
+                $('#slider-downRating').text(downRating);
+                
               oninput="
                 this.classList.remove('incomplete');
                 this.classList.add('bipolar-clicked');
@@ -587,10 +608,19 @@ function prePredictionsOther(trialIndex) {
                 $('#slider-upRating').text(upRating);
               "
             >
-            <output style="position: absolute; left: 0%; font-size: 14pt;" id="slider-downRating">50%</output>
-            <output style="position: absolute; right: 0%; font-size: 14pt;"id="slider-upRating">50%</output><br>
-            <span class="jspsych-slider-left-anchor">believe this is morally bad</span>
-            <span class="jspsych-slider-right-anchor">believe this is morally good</span>
+
+            <div class="slider-container">
+              <output id="slider-downRating">50%</output>
+              <output id="slider-upRating">50%</output>
+            </div>
+            <div class="slider-anchors">
+              <span class="jspsych-slider-left-anchor">
+                Believe this is morally bad
+              </span>
+              <span class="jspsych-slider-right-anchor">
+                Believe this is morally good
+              </span>
+            </div>
           </div><br><br><br>
 
 
@@ -606,6 +636,12 @@ function prePredictionsOther(trialIndex) {
               class="jspsych-slider incomplete" 
               value="50" min="0" max="100" step="1" 
               id="pre-slider-moral-confidence"
+              onmousedown="
+                this.classList.remove('incomplete');
+                this.classList.add('unipolar-clicked');
+
+                document.getElementsByName('pre-slider-moral-confidence-clicked')[0].value = 'true';
+              "
               oninput="
                 this.classList.remove('incomplete');
                 this.classList.add('unipolar-clicked');
@@ -613,8 +649,14 @@ function prePredictionsOther(trialIndex) {
                 document.getElementsByName('pre-slider-moral-confidence-clicked')[0].value = 'true';
               "
             >
-            <span class="jspsych-slider-left-anchor">Not at all confident</span>
-            <span class="jspsych-slider-right-anchor">Completely confident</span>
+            <div class="slider-anchors">
+              <span class="jspsych-slider-left-anchor">
+                Not at all confident
+              </span>
+              <span class="jspsych-slider-right-anchor">
+                Completely confident
+              </span>
+            </div>
           </div><br><br><br>`,
     button_label: 'Next',
     request_response: true,
@@ -636,16 +678,19 @@ function prePredictionsOther(trialIndex) {
   };
 };
 
-function selectionTask(trialIndex) {
+function selectionTask(normManipulation, politicalManipulation, contributionManipulation, avatarDictionary) {
   return {
     type: jsPsychSelectionLearning,
-    trialIndex: trialIndex,
     avatars: avatarDictionary,
     conditionNorm: normManipulation,
     conditionPolitical: politicalManipulation,
-    statement: statements[trials[trialIndex]],
+    conditionContribution: contributionManipulation,
     choices: [
       "<i class='fa-solid fa-rotate-left'></i>&nbsp;&nbsp;Continue sampling",
+      "<i class='fa-solid fa-circle-check' style='color: green'></i>&nbsp;&nbsp;I'm all done"
+    ],
+    choicesOnFinish: [
+      "<i class='fa-solid fa-arrow-left'></i>&nbsp;&nbsp;Review",
       "<i class='fa-solid fa-circle-check' style='color: green'></i>&nbsp;&nbsp;I'm all done"
     ]
   };
@@ -667,14 +712,10 @@ for (let i = 0; i < 100; i++) {
 };
 
 // Post-Predictions (Self) //
-function postPredictionsSelf(trialIndex) {
+function postPredictionsSelf() {
   return {
     type: jsPsychSurveyHtmlForm,
     preamble: `
-          <div class="quote">
-            <h3>Statement #` + (trialIndex + 1) + `</h3>
-            <blockquote>` + statements[trials[trialIndex]] + `</blockquote>
-          </div>
           <p class="jspsych-survey-multi-choice-preamble">
             Now that you've had the chance to see what other people 
             think about the statement, we want to know what you think again.
@@ -694,14 +735,25 @@ function postPredictionsSelf(trialIndex) {
               class="jspsych-slider incomplete" 
               value="50" min="0" max="100" step="1" 
               id="post-slider-moral-action"
+              onmousedown="
+                this.classList.remove('incomplete');
+                this.classList.add('bipolar-clicked');
+                document.getElementsByName('post-slider-moral-action-clicked')[0].value = 'true';
+              "
               oninput="
                 this.classList.remove('incomplete');
                 this.classList.add('bipolar-clicked');
                 document.getElementsByName('post-slider-moral-action-clicked')[0].value = 'true';
               "
             >
-            <span class="jspsych-slider-left-anchor">Definitely morally bad</span>
-            <span class="jspsych-slider-right-anchor">Definitely morally good</span>
+            <div class="slider-anchors">
+              <span class="jspsych-slider-left-anchor">
+                Definitely morally bad
+              </span>
+              <span class="jspsych-slider-right-anchor">
+                Definitely morally good
+              </span>
+            </div>
           </div><br><br><br>
           
 
@@ -718,14 +770,25 @@ function postPredictionsSelf(trialIndex) {
               class="jspsych-slider incomplete" 
               value="50" min="0" max="100" step="1" 
               id="post-slider-moral-person"
+              onmousedown="
+                this.classList.remove('incomplete');
+                this.classList.add('bipolar-clicked');
+                document.getElementsByName('post-slider-moral-person-clicked')[0].value = 'true';
+              "
               oninput="
                 this.classList.remove('incomplete');
                 this.classList.add('bipolar-clicked');
                 document.getElementsByName('post-slider-moral-person-clicked')[0].value = 'true';
               "
             >
-            <span class="jspsych-slider-left-anchor">Definitely morally bad</span>
-            <span class="jspsych-slider-right-anchor">Definitely morally good</span>
+            <div class="slider-anchors">
+              <span class="jspsych-slider-left-anchor">
+                Definitely morally bad
+              </span>
+              <span class="jspsych-slider-right-anchor">
+                Definitely morally good
+              </span>
+            </div>
           </div><br><br><br>`,
     button_label: 'Next',
     request_response: true,
@@ -748,14 +811,10 @@ function postPredictionsSelf(trialIndex) {
 };
 
 // Post-Predictions (Other) //
-function postPredictionsOther(trialIndex) {
+function postPredictionsOther() {
   return {
     type: jsPsychSurveyHtmlForm,
     preamble: `
-          <div class="quote">
-            <h3>Statement #` + (trialIndex + 1) + `</h3>
-            <blockquote>` + statements[trials[trialIndex]] + `</blockquote>
-          </div>
           <p class="jspsych-survey-multi-choice-preamble">
             Now that you've had the chance to see what other people 
             think about the statement, we want to know what you think again.
@@ -775,6 +834,19 @@ function postPredictionsOther(trialIndex) {
               class="jspsych-slider incomplete" 
               value="50" min="0" max="100" step="1" 
               id="post-slider-moral-estimate-percent"
+              onmousedown="
+                this.classList.remove('incomplete');
+                this.classList.add('bipolar-clicked');
+
+                document.getElementsByName('post-slider-moral-estimate-percent-clicked')[0].value = 'true';
+              
+                let rawRating = parseFloat(this.value);
+                let downRating = (100 - rawRating) + '%';
+                let upRating = rawRating + '%';
+              
+                $('#slider-downRating').text(downRating);
+                $('#slider-upRating').text(upRating);
+              "
               oninput="
                 this.classList.remove('incomplete');
                 this.classList.add('bipolar-clicked');
@@ -789,10 +861,18 @@ function postPredictionsOther(trialIndex) {
                 $('#slider-upRating').text(upRating);
               "
             >
-            <output style="position: absolute; left: 0%; font-size: 14pt;" id="slider-downRating">50%</output>
-            <output style="position: absolute; right: 0%; font-size: 14pt;"id="slider-upRating">50%</output><br>
-            <span class="jspsych-slider-left-anchor">Believe this action is morally bad</span>
-            <span class="jspsych-slider-right-anchor">Believe this action is morally good</span>
+            <div class="slider-container">
+              <output id="slider-downRating">50%</output>
+              <output id="slider-upRating">50%</output>
+            </div>
+            <div class="slider-anchors">
+              <span class="jspsych-slider-left-anchor">
+                Believe this action is morally bad
+              </span>
+              <span class="jspsych-slider-right-anchor">
+                Believe this action is morally good
+              </span>
+            </div>
           </div><br><br><br>
 
           
@@ -809,6 +889,12 @@ function postPredictionsOther(trialIndex) {
               class="jspsych-slider incomplete" 
               value="50" min="0" max="100" step="1" 
               id="post-slider-moral-confidence"
+              onmousedown="
+                this.classList.remove('incomplete');
+                this.classList.add('unipolar-clicked');
+
+                document.getElementsByName('post-slider-moral-confidence-clicked')[0].value = 'true';
+              "
               oninput="
                 this.classList.remove('incomplete');
                 this.classList.add('unipolar-clicked');
@@ -816,8 +902,14 @@ function postPredictionsOther(trialIndex) {
                 document.getElementsByName('post-slider-moral-confidence-clicked')[0].value = 'true';
               "
             >
-            <span class="jspsych-slider-left-anchor">Not at all confident</span>
-            <span class="jspsych-slider-right-anchor">Completely confident</span>
+            <div class="slider-anchors">
+              <span class="jspsych-slider-left-anchor">
+                Not at all confident
+              </span>
+              <span class="jspsych-slider-right-anchor">
+                Completely confident
+              </span>
+            </div>
           </div><br><br><br>`,
     button_label: 'Next',
     request_response: true,
@@ -836,21 +928,6 @@ function postPredictionsOther(trialIndex) {
         .getDataByTimelineNode(jsPsych.getCurrentTimelineNodeID())
         .addToAll(postSamplingMoralOtherData);
     }
-  };
-};
-
-// Intertrial Break Page
-function newTrialPage(trialIndex) {
-  return {
-    type: jsPsychInstructions,
-    pages: [`
-          <h2><strong>Trial ` + (trialIndex + 1) + `/` + trials.length + ` Completed!</strong></h2>
-          <p style="text-align: left;">
-            Great Job! You will now advance to the second trial. 
-            Please click the button below to continue.
-          </p>`
-    ],
-    show_clickable_nav: true
   };
 };
 
@@ -1043,18 +1120,13 @@ const ihQuestions = {
 // timeline.push(instructions, instructionsComprehensionCheck);
 
 // Sampling Task
-for (let trialIndex = 0; trialIndex < trials.length; trialIndex++) {
-  timeline.push(
-    // prePredictionsSelf(trialIndex),
-    // prePredictionsOther(trialIndex),
-    selectionTask(trialIndex),
-    postPredictionsSelf(trialIndex),
-    postPredictionsOther(trialIndex),
-  );
-  if (trialIndex != trials.length - 1) {
-    timeline.push(newTrialPage(trialIndex));
-  };
-};
+
+ timeline.push(
+  // prePredictionsSelf(),
+  // prePredictionsOther(),
+  selectionTask(),
+  postPredictionsSelf(),
+  postPredictionsOther())
 
 
 // Opportunity to learn the true percentage... (take from intro)
@@ -1641,11 +1713,13 @@ const feedback = {
     {
       name: 'guess-study-purpose',
       prompt: 'What do you think this study was about?',
+      columns: 100,
       rows: 10
     },
     {
       name: 'feedback',
       prompt: 'Do you have any additional comments? We appreciate any and all feedback!',
+      columns: 100,
       rows: 10
     }
   ],
@@ -1675,8 +1749,7 @@ const exitFullscreen = {
 timeline.push(exitFullscreen);
 
 // Choose from among these to relay via DataPipe
-const pilot1ExperimentId = "oA2BJCIcu8jQ";
-const debugExperimentId = "A6svaLMoS1gc";
+const debugExperimentId = "XyR978iH6AOX";
 
 // DataPipe conclude data collection
 const save_data = {
