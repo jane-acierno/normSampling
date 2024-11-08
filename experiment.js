@@ -1,8 +1,3 @@
-// Add curiosity yes/no TODO: in progress -- wait to receive actual numbers, make in big font
-// Debug for nulls
-// Create study 1 pipe 
-// Wait for Jordan correct redirect number 
-
 // DEFINE GLOBAL VARIABLES
 let timeline = [];
 
@@ -31,7 +26,7 @@ const politicalManipulation = jsPsych.randomization.sampleWithoutReplacement(['p
 // High vs. Low Contribution
 const contributionManipulation = jsPsych.randomization.sampleWithoutReplacement(['high', 'low'], 1)[0];
 
-// Concatenate individual manipulation outcomes to create composi te condition variable
+// Concatenate individual manipulation outcomes to create composite condition variable
 const condition = normManipulation + "_" + politicalManipulation + "_" + contributionManipulation;
 
 
@@ -49,15 +44,6 @@ jsPsych.data.addProperties({
 
 // Options
 const valueOpinionOptions = ['Yes', 'Somewhat', 'No'];
-
-// Perspective Taking Empathy (iri)
-const iriResponses = [
-  "1 = Does not describe me at all",
-  "2",
-  "3",
-  "4",
-  "5 = Describes me very well"
-];
 
 // Political Ideology
 const politicalResponses = [
@@ -77,17 +63,6 @@ const demandEffectsResponses = [
   "3",
   "4",
   "5 = Very much so"
-];
-
-// Personality: Intellectual Humility
-const ihResponses = [
-  "1 = Not at all\ncharacteristic of me",
-  "2",
-  "3",
-  "4",
-  "5",
-  "6",
-  "7 = Very characteristic\nof me"
 ];
 
 // ENTER FULLSCREEN //
@@ -198,485 +173,309 @@ const consentForm = {
 timeline.push(consentForm);
 
 
-// DESCRIPTIVE INSTRUCTIONS //
-const instructionsDescriptive = {
+// GAME INSTRUCTIONS //
+const instructionsGame = {
   type: jsPsychInstructions,
   pages: [`
-        <h2><strong>Instructions (1/4)</strong></h2>
+        <h2><strong>Instructions</strong></h2>
         <p style="text-align: left;">
-          Welcome to this experiment! In a previous experiment we recruited a <strong> nationally representative 
-          sample of Americans </strong> to play a game. The game had only one round. People were matched in groups 
-          of four players.
+          Thank you for taking our study!
         </p>
         <p style="text-align: left;">
-          The players each received 500 point endowments. 500 points is equal to $0.50. In the game there 
-          is a public pool. Players were allowed to contribute any amount of their endowment, from 
-          0 to 500 points, to the public pool. Any contributions that group members made were added together 
-          and doubled, then split evenly among the four players. Any amount that players kept for themselves 
-          was not doubled. For each player, the amount that gets redistributed from the common pool was 
-          added to the amount they kept, then translated into cash (500 points = $0.50) and paid out as 
-          a bonus payment at the end of the game.
-        </p>`,
-
-    `<h2><strong>Instructions (2/4)</strong></h2>
-        <p style="text-align: left;">
-          Today, you will get to view the contibutions of the previous study participants. 
-          For that study, we made sure to recruit a nationally representative 
-          sample so that the behavior of those participants should accurately represent the behavior of people 
-          in the <strong>U.S. more broadly</strong>.
-        </p>`,
-
-    `<h2><strong>Instructions (3/4)</strong></h2>
-        <p style="text-align: left;">
-          Your job is to estimate the average amount of money that people contribute to the common pool.
-        </p>`,
-
-    `<h2><strong>Instructions (4/4)</strong></h2>
-        <p style="text-align: left;">
-          To help you estimate how much other Americans contribute, you will have the opportunity 
-          to see the amounts that people in that previous study contributed. You will see 
-          randomly generated avatars representing people who participated in that study.
+          In this study you are going to play a game. The game has only one round. 
+          You will be matched with three other players, making a group of four. 
+          The other players will be selected at random from a nationally representative sample of Americans.
         </p>
         <p style="text-align: left;">
-          Every time you click on an avatar, you will see the amount that
-          <strong> that one person contributed.</strong> 
-          You can view the contributions of as many people as you'd like before making your estimate.
-        </p>`
+          You and the other players in your group will each receive a 500 point endowment. 
+          500 points is equal to $0.50. In this game, there is a common pool. 
+          You can contribute any amount of your endowment, from 0 to 500 points, to the common pool. 
+          Any contributions that you and your fellow group members make to the pool will be added together and doubled, 
+          and then split evenly among the four of you. Any amount you decide to keep for yourself will not be doubled 
+          or split among other players. The amount you keep and the amount that gets redistributed from the common pool 
+          will be added up, translated into cash (500 points = $0.50), and paid to you as a bonus payment at the end of the game.
+        </p>`,
+
+    `<h2><strong>Instructions</strong></h2>
+      <p style="text-align: left;">
+        Here are some example gameplays.
+      </p>
+      <ul style="text-align: left;">
+        <li>
+          If everyone contributes their entire endowments to the common pool,
+          everyone will end the game with 1000 points ($1).
+        </li>
+        <li>
+          If no one contributes to the common pool, 
+          everyone will end the game with 500 points ($0.50).
+        </li>
+        <li>
+          If you do not contribute anything and the other players contribute their full endowments to the pool,
+          they will each end the game with 750 points ($0.75) and you will end the game with 1250 points ($1.25).
+        </li>
+        <li>
+          If you contribute your full endowment and the other players do not contribute anything to the pool, 
+          you will end the game with 250 points ($0.25) and the other players will each end the game with 750 points ($0.75).
+        </li>
+      </ul>
+      <p style="text-align: left;">
+        These are only examples and for simplicity we explained cases where people contribute all or nothing, 
+        but you are free to contribute any fraction of your endowment to the pool that you wish!
+      </p>`
   ],
   show_clickable_nav: true,
 };
 
-// INJUNCTIVE INSTRUCTIONS //
-const instructionsInjunctive = {
-  type: jsPsychInstructions,
-  pages: [
-    `<h2><strong>Instructions (1/4)</strong></h2>
-        <p style="text-align: left;">
-          Welcome to this experiment! In a previous experiment we recruited a <strong> nationally representative 
-          sample of Americans </strong> to tell us their opinions about a game. The game would have only one round, 
-          and people would be matched in groups of four players.
-        </p>
-        <p style="text-align: left;">
-          The players would each received 500 point endowments. 500 points is equal to $0.50. In the game there 
-          would be a public pool. Players would be allowed to contribute any amount of their endowment, from 
-          0 to 500 points, to the public pool. Any contributions that group members made would be added together 
-          and doubled, then split evenly among the four players. Any amount that players keep for themselves 
-          would not doubled. For each player, the amount that gets redistributed from the common pool would be 
-          added to the amount they keep, then translated into cash (500 points = $0.50) and paid out as 
-          a bonus payment at the end of the game.
-        </p>`,
 
-    `<h2><strong>Instructions (2/4)</strong></h2>
-    <p style="text-align: left;">
-      Today, you will get to view the opinions of the previous study participants on how they think people should 
-      play the game. For that study, we made sure to recruit a nationally representative 
-      sample so that the opinions of those participants should accurately represent the opinions of people 
-      in the <strong>U.S. more broadly</strong>.
-    </p>`,
-
-    `<h2><strong>Instructions (3/4)</strong></h2>
-    <p style="text-align: left;">
-          Your job is to estimate the average amount of money that <strong>people think others should contribute</strong> to the common pool.
-    </p>`,
-
-    `<h2><strong>Instructions (4/4)</strong></h2>
-        <p style="text-align: left;">
-          To help you estimate how much other Americans think players should contribute, you will have the opportunity 
-          to see the amounts that people in that previous study said others should contribute. You will see 
-          randomly generated avatars representing people who participated in that study.
-        </p>
-        <p style="text-align: left;">
-          Every time you click on an avatar, you will see the amount that
-          <strong> that one person thinks others should contribute.</strong> 
-          You can view the opinions of as many people as you'd like before making your estimate.
-        </p>`
-  ],
-  show_clickable_nav: true
-};
-
-const instructionsDescriptiveComprehensionCheck = {
+const instructionsGameCompCheck = {
   type: jsPsychSurveyMultiChoice,
   questions: [
     {
-      name: 'desc_comp_check_1',
-      prompt: '<strong><i class="fa-solid fa-circle-question"></i>&nbsp;&nbsp;For each statement, your task is to:</strong>',
+      name: 'game_comp_check_1',
+      prompt: '<strong><i class="fa-solid fa-circle-question"></i>&nbsp;&nbsp;What factor will any contributions to the common pool be multiplied by?</strong>',
       options: [
-        "Estimate the average contribution amount of people in the U.S.",
-        "Estimate the average age of people in the U.S.",
-        "Estimate the percentage of people in the U.S. who agree with me about how to play the game",
-        "Estimate the percentage of people in the U.S. who have played this game before"
+        "0.5x (halved)",
+        "1x (no change)",
+        "2x (doubled)",
+        "3x (tripled)"
       ],
-      correct: 'Estimate the average contribution amount of people in the U.S.',
-      hint: `That's not quite right. Remember, you are trying to estimate the <strong>average contribution amount</strong> of people in the U.S.`,
+      correct: '2x (doubled)',
+      hint: `That's not quite right.`,
       required: true,
     },
     {
-      name: 'desc_comp_check_2',
+      name: 'game_comp_check_2',
       prompt: `
             <strong>
               <i class="fa-solid fa-circle-question"></i>&nbsp;&nbsp;
-              You can view the contributions of as many people as you'd like before making your estimate.
+              How will money in the common pool be distributed at the end of the game?
             </strong>`,
-      options: ["True", "False"],
-      correct: 'True',
-      hint: `That's not quite right. Remember, you will have the chance to view the contributions of <strong>as many people as you'd like</strong> before making your estimate.`,
+      options: [
+        "You get it all (the other players get nothing)",
+        "It is randomly split four ways",
+        "It is evenly split four ways",
+        "The other players split it (you get nothing)"
+      ],
+      correct: 'It is evenly split four ways',
+      hint: `That's not quite right.`,
+      required: true,
+    },
+    {
+      name: 'game_comp_check_3',
+      prompt: `
+            <strong>
+              <i class="fa-solid fa-circle-question"></i>&nbsp;&nbsp;
+              What factor will any amount that you do not 
+              contribute to the common pool be multiplied by?
+            </strong>`,
+      options: [
+        "0.5x (halved)",
+        "1x (no change)",
+        "2x (doubled)",
+        "3x (tripled)"
+      ],
+      correct: '1x (no change)',
+      hint: `That's not quite right.`,
+      required: true,
+    },
+    {
+      name: 'game_comp_check_4',
+      prompt: `
+            <strong>
+              <i class="fa-solid fa-circle-question"></i>&nbsp;&nbsp;
+              How will your winnings be determined?
+            </strong>`,
+      options: [
+        "the amount you kept + the amount you contributed",
+        "the amount you kept + (2 x the amount you contributed)",
+        "the amount you kept + the total amount in the common pool",
+        "the amount you kept + (2 x the total amount in the common pool / 4)"
+      ],
+      correct: 'the amount you kept + (2 x the total amount in the common pool / 4)',
+      hint: `That's not quite right.`,
       required: true,
     },
   ],
   preamble:
     `<h2 style="text-align: center;">Instructions Review</h2> 
     <p style="text-align: left;"> 
-      The experiment will begin on the next page.
-      
-      As a reminder, you will see the contributions made by a nationally representative sample
-      of Americans and be asked to estimate the avergae contribution.<br><br>
-
-      We will first ask you a few questions about how much you expect people will contribute
-      before you get to see any information about what others actually contributed. Then, you will see a page 
-      of many different avatars that each represent real participants' contributions. <br><br>
-
-      <strong>
-        You are free to review as many contributions as you would like before providing us 
-        your final estimate of the avergae contribution amount.
-      </strong>
-
-      To make sure you fully understand the instructions for this study, please answer the questions below: 
+      Just to make sure you understand how the game works, please answer the following questions.
     </p>`,
 };
 
-const instructionsInjunctiveComprehensionCheck = {
-  type: jsPsychSurveyMultiChoice,
-  questions: [
-    {
-      name: 'inj_comp_check_1',
-      prompt: `
-            <strong>
-              <i class="fa-solid fa-circle-question"></i>&nbsp;&nbsp;
-              For each statement, your task is to:
-            </strong>`,
-      options: [
-        "Estimate the average age of people in the U.S.",
-        "Estimate the average amount that people in the U.S. think others should contribute",
-        "Estimate the percentage of people in the U.S. who agree with me about how to play the game",
-        "Estimate the percentage of people in the U.S. who have played this game before"
-      ],
-      correct: 'Estimate the average amount that people in the U.S. think others should contribute',
-      hint: `That's not quite right. Remember, you are trying to estimate the average amount that people in the U.S. <strong>think others should contribute</strong>.`,
-      required: true,
-    },
-    {
-      name: 'inj_comp_check_2',
-      prompt: `
-            <strong>
-              <i class="fa-solid fa-circle-question"></i>&nbsp;&nbsp;
-              You can view the opinions of as many people as you'd like before making your estimate:
-            </strong>`,
-      options: [
-        "True",
-        "False"
-      ],
-      correct: 'True',
-      hint: `That's not quite right. Remember, you will have the chance to view the opinions of <strong>as many people as you'd like</strong> before making your estimate.`,
-      required: true,
-    },
-  ],
+
+// Game instructions
+timeline.push(instructionsGame, instructionsGameCompCheck);
+
+
+// Pre-Predictions //
+const prePredictions = {
+  type: jsPsychSurveyHtmlForm,
   preamble: `
-    <h2 style="text-align: center;">Instructions</h2> 
-    <p style="text-align: left;"> 
-      The experiment will begin on the next page.
-      
-      As a reminder, you will see the opinions of a nationally representative sample
-      of Americans on how much they think others should contribute, and you will be 
-      asked to estimate the avergae amount others think players should contribute.<br><br>
+        <p class="jspsych-survey-multi-choice-preamble">
+          First we want to know your thoughts about the choices people in general make in this game.
+        </p><br><br>`,
+  html: `
+        <input type="hidden" name="pre-slider-clicked" value="false">
+        <label for="pre-slider" class="jspsych-survey-multi-choice-question">
+          Ignoring for now what people actually do, how much of their endowments do you think players should contribute to the common pool?
+        </label>
+        <div style="position: relative;">
+          <input 
+            name="pre-slider" 
+            type="range" 
+            class="jspsych-slider incomplete" 
+            value="250" min="0" max="500" step="1" 
+            id="pre-slider"
+            onmousedown="
+              this.classList.remove('incomplete');
+              this.classList.add('bipolar-clicked');
+              document.getElementsByName('pre-slider-clicked')[0].value = 'true';
+            "
+            oninput="
+              this.classList.remove('incomplete');
+              this.classList.add('bipolar-clicked');
+              document.getElementsByName('pre-slider-clicked')[0].value = 'true';
+            "
+          >
+          <div class="slider-anchors">
+            <span class="jspsych-slider-left-anchor">
+              0 points
+            </span>
+            <span class="jspsych-slider-right-anchor">
+              500 points
+            </span>
+          </div>
+        </div><br><br><br>`,
+  button_label: 'Next',
+  request_response: true,
+  on_finish: function (data) {
+    // Collect and structure data from the response
+    let preSamplingData = data.response;
+    let pre_slider_check = preSamplingData['pre-slider-clicked'] === 'true' ? preSamplingData['pre-slider'] : null;
 
-      We will first ask you a few questions about how much you expect other people think players should contribute
-      before you get to see previous participants' opinions. Then, you will see a page 
-      of many different avatars that each represent real participants' opinions about how much others should contribute. <br><br>
+    // Organize data
+    preSamplingData = {
+      pre_slider: pre_slider_check,
+    };
 
-      <strong>
-        You are free to review as many opinions as you would like before providing us 
-        your final estimate of the avergae amount that other people think players should contribute.
-      </strong>
+    // Add data to all timeline nodes for this step
+    jsPsych.data
+      .getDataByTimelineNode(jsPsych.getCurrentTimelineNodeID())
+      .addToAll(preSamplingData);
+  }
+};
 
-      To make sure you fully understand the instructions for this study, please answer the questions below: 
-    </p>`,
+// Pre-prediction
+timeline.push(prePredictions);
+
+
+// ID INJUNCTIVE SAMPLING INSTRUCTIONS //
+const instructionsInjunctiveID = {
+  type: jsPsychInstructions,
+  pages: [`
+        <p style="text-align: left;">
+          Before you play the game you will get to view the opinions of the previous players on how they think people should play the game. 
+          For that study, we made sure to recruit a nationally representative sample of Americans. 
+          Today you will have the chance to view some of their responses.
+        </p>
+        <p style="text-align: left;">
+          Previous participants' political affiliation is indicated through blue and red circles around their avatars. 
+          Blue circles indicate democrats and red circles indicate republicans.
+        </p>
+        <p style="text-align: left;">
+          On the next page you will see avatars representing the people who participated in that study, 
+          with blue or red circles indicating political party affiliation (blue for democrats, red for republicans). 
+          Every time you click on an avatar, you will see the amount that that one person thinks others should contribute. 
+          You can view the contributions of as many people as you'd like before playing the game yourself.
+        </p>`
+  ],
+  show_clickable_nav: true,
+};
+
+// NO ID INJUNCTIVE SAMPLING INSTRUCTIONS //
+const instructionsInjunctiveNoID = {
+  type: jsPsychInstructions,
+  pages: [`
+        <p style="text-align: left;">
+          Before you play the game you will get to view the opinions of the previous players on how they think people should play the game. 
+          For that study, we made sure to recruit a nationally representative sample of Americans. 
+          Today you will have the chance to view some of their responses.
+        </p>
+        <p style="text-align: left;">
+          On the next page you will see avatars representing the people who participated in that study. 
+          Every time you click on an avatar, you will see the amount that that one person thinks others should contribute. 
+          You can view the contributions of as many people as you'd like before playing the game yourself.
+        </p>`
+  ],
+  show_clickable_nav: true,
+};
+
+// NO ID DESCRIPTIVE SAMPLING INSTRUCTIONS //
+const instructionsDescriptiveNoID = {
+  type: jsPsychInstructions,
+  pages: [`
+        <p style="text-align: left;">
+          Before you play the game you will get to view the contributions of the previous players. 
+          For that study, we made sure to recruit a nationally representative sample of Americans. 
+          Today you will have the chance to view some of their contributions.
+        </p>
+        <p style="text-align: left;">
+          On the next page you will see avatars representing the people who participated in that study, 
+          Every time you click on an avatar, you will see the amount that that one person contributed. 
+          You can view the contributions of as many people as you'd like before playing the game yourself.
+        </p>`
+  ],
+  show_clickable_nav: true,
+};
+
+// ID DESCRIPTIVE SAMPLING INSTRUCTIONS //
+const instructionsDescriptiveID = {
+  type: jsPsychInstructions,
+  pages: [`
+        <p style="text-align: left;">
+          Before you play the game you will get to view the contributions of the previous players. 
+          For that study, we made sure to recruit a nationally representative sample of Americans. 
+          Today you will have the chance to view some of their contributions.
+        </p>
+        <p style="text-align: left;">
+            Previous participants' political affiliation is indicated through blue and red circles around their avatars. 
+            Blue circles indicate democrats and red circles indicate republicans.
+        </p>
+        <p style="text-align: left;">
+          On the next page you will see avatars representing the people who participated in that study, 
+          with blue or red circles indicating political party affiliation (blue for democrats, red for republicans). 
+          Every time you click on an avatar, you will see the amount that that one person contributed. 
+          You can view the contributions of as many people as you'd like before playing the game yourself.
+        </p>`
+  ],
+  show_clickable_nav: true,
 };
 
 
 // PUSH
-// if (normManipulation === 'descriptive') {
+if (normManipulation === 'descriptive' && politicalManipulation === 'present') {
+  timeline.push(
+    instructionsDescriptiveID,
+    // instructionsDescriptiveIDComprehensionCheck
+  );
+} else if (normManipulation === 'descriptive' && politicalManipulation === 'absent') {
+  timeline.push(
+    instructionsDescriptiveNoID,
+    // instructionsDescriptiveNoIDComprehensionCheck
+  );
+} else if (normManipulation === 'injunctive' && politicalManipulation === 'present') {
+  timeline.push(
+    instructionsInjunctiveID,
+    // instructionsInjunctiveIDComprehensionCheck
+  );
+} else if (normManipulation === 'injunctive' && politicalManipulation === 'absent') {
+  timeline.push(
+    instructionsInjunctiveNoID,
+    // instructionsInjunctiveNoIDComprehensionCheck
+  );
+}
 
-//   timeline.push(
-//     instructionsDescriptive,
-//     instructionsDescriptiveComprehensionCheck
-//   );
-
-// } else if (normManipulation === 'injunctive') {
-  
-//   timeline.push
-//     instructionsInjunctive,
-//     instructionsInjunctiveComprehensionCheck
-//   );
-// };
-
-// Pre-Predictions (Self) //
-function prePredictionsSelf() {
-  return {
-    type: jsPsychSurveyHtmlForm,
-    preamble: `
-          <p class="jspsych-survey-multi-choice-preamble">
-            Before you see what other people think about 
-            the statement, we want to know what you think:
-          </p><br><br>`,
-    html: `
-          <!-- Pre-Sampling Moral Action Rating -->
-          
-          <input type="hidden" name="pre-slider-moral-action-clicked" value="false">
-          <label for="pre-slider-moral-action" class="jspsych-survey-multi-choice-question">
-            To what extent do you think this <em>action</em> is morally good or morally bad?
-          </label>
-          <div style="position: relative;">
-            <input 
-              name="pre-slider-moral-action" 
-              type="range" 
-              class="jspsych-slider incomplete" 
-              value="50" min="0" max="100" step="1" 
-              id="pre-slider-moral-action"
-              onmousedown="
-                this.classList.remove('incomplete');
-                this.classList.add('bipolar-clicked');
-
-                document.getElementsByName('pre-slider-moral-action-clicked')[0].value = 'true';
-              "
-              oninput="
-                this.classList.remove('incomplete');
-                this.classList.add('bipolar-clicked');
-
-                document.getElementsByName('pre-slider-moral-action-clicked')[0].value = 'true';
-              "
-            >
-            <div class="slider-anchors">
-              <span class="jspsych-slider-left-anchor">
-                Definitely morally bad
-              </span>
-              <span class="jspsych-slider-right-anchor">
-                Definitely morally good
-              </span>
-            </div>
-          </div><br><br><br>
-
-
-          <!-- Pre-Sampling Moral Person Rating -->
-
-          <input type="hidden" name="pre-slider-moral-person-clicked" value="false">
-          <label for="pre-slider-moral-person" class="jspsych-survey-multi-choice-question">
-            To what extent do you think this <em>person</em> is morally good or morally bad?
-          </label>
-          <div style="position: relative;">
-            <input 
-              name="pre-slider-moral-person"
-              type="range" 
-              class="jspsych-slider incomplete" 
-              value="50" min="0" max="100" step="1" 
-              id="pre-slider-moral-person"
-              onmousedown="
-                this.classList.remove('incomplete');
-                this.classList.add('bipolar-clicked');
-
-                document.getElementsByName('pre-slider-moral-person-clicked')[0].value = 'true';
-              "
-              oninput="
-                this.classList.remove('incomplete');
-                this.classList.add('bipolar-clicked');
-
-                document.getElementsByName('pre-slider-moral-person-clicked')[0].value = 'true';
-              "
-            >
-            <div class="slider-anchors">
-              <span class="jspsych-slider-left-anchor">
-                Definitely morally bad
-              </span>
-              <span class="jspsych-slider-right-anchor">
-                Definitely morally good
-              </span>
-            </div>
-          </div><br><br><br>
-          
-          <!-- Pre-Sampling Moral Curiosity -->
-
-          <input type="hidden" name="pre-slider-moral-curious-clicked" value="false">
-          <label for="pre-slider-moral-curious" class="jspsych-survey-multi-choice-question">
-            How curious are you to learn about what other people think about this statement?<br>
-          </label>
-          <div style="position: relative;">
-            <input 
-              name="pre-slider-moral-curious" 
-              type="range" 
-              class="jspsych-slider incomplete" 
-              value="50" min="0" max="100" step="1" 
-              id="pre-slider-moral-curious"
-              onmousedown="
-                this.classList.remove('incomplete');
-                this.classList.add('unipolar-clicked');
-
-                document.getElementsByName('pre-slider-moral-curious-clicked')[0].value = 'true';
-              "
-              oninput="
-                this.classList.remove('incomplete');
-                this.classList.add('unipolar-clicked');
-
-                document.getElementsByName('pre-slider-moral-curious-clicked')[0].value = 'true';
-              "
-            >
-            <div class="slider-anchors">
-              <span class="jspsych-slider-left-anchor">
-                Not at all curious
-              </span>
-              <span class="jspsych-slider-right-anchor">
-                Extremely curious
-              </span>
-            </div>
-          </div><br><br><br>`,
-    button_label: 'Next',
-    request_response: true,
-    on_finish: function (data) {
-      let preSamplingMoralSelfData = data.response;
-
-      let pre_slider_moral_action_check = preSamplingMoralSelfData['pre-slider-moral-action-clicked'] === 'true' ? preSamplingMoralSelfData['pre-slider-moral-action'] : null;
-      let pre_slider_moral_person_check = preSamplingMoralSelfData['pre-slider-moral-person-clicked'] === 'true' ? preSamplingMoralSelfData['pre-slider-moral-person'] : null;
-      let pre_slider_moral_curious_check = preSamplingMoralSelfData['pre-slider-moral-curious-clicked'] === 'true' ? preSamplingMoralSelfData['pre-slider-moral-curious'] : null;
-
-
-      preSamplingMoralSelfData = {
-        pre_slider_moral_action: pre_slider_moral_action_check,
-        pre_slider_moral_person: pre_slider_moral_person_check,
-        pre_slider_moral_curious: pre_slider_moral_curious_check
-      };
-
-      jsPsych.data
-        .getDataByTimelineNode(jsPsych.getCurrentTimelineNodeID())
-        .addToAll(preSamplingMoralSelfData);
-    }
-  };
-};
-
-// Pre-Predictions (Other) //
-function prePredictionsOther() {
-  return {
-    type: jsPsychSurveyHtmlForm,
-    preamble: `
-          <p class="jspsych-survey-multi-choice-preamble">
-            Before you see what other people think about the statement, we want to know what you think:
-          </p><br><br>`,
-    html: `
-          <!-- Pre-Sampling Moral Estimate Rating -->
-
-          <input type="hidden" name="pre-slider-moral-estimate-percent-clicked" value="false">
-          <label for="pre-slider-moral-estimate-percent" class="jspsych-survey-multi-choice-question">
-            What percentage of people in the U.S. do you think consider this action to be morally good vs. think this is morally bad?
-          </label>
-          <div style="position: relative;">
-            <input 
-              name="pre-slider-moral-estimate-percent" 
-              type="range" 
-              class="jspsych-slider incomplete" 
-              value="50" min="0" max="100" step="1" 
-              id="pre-slider-moral-estimate-percent"
-                            onmousedown="
-                this.classList.remove('incomplete');
-                this.classList.add('bipolar-clicked');
-
-                document.getElementsByName('pre-slider-moral-estimate-percent-clicked')[0].value = 'true';
-
-                let rawRating = parseFloat(this.value);
-                let downRating = (100 - rawRating) + '%';
-                let upRating = rawRating + '%';
-              
-                $('#slider-downRating').text(downRating);
-                
-              oninput="
-                this.classList.remove('incomplete');
-                this.classList.add('bipolar-clicked');
-
-                document.getElementsByName('pre-slider-moral-estimate-percent-clicked')[0].value = 'true';
-
-                let rawRating = parseFloat(this.value);
-                let downRating = (100 - rawRating) + '%';
-                let upRating = rawRating + '%';
-              
-                $('#slider-downRating').text(downRating);
-                $('#slider-upRating').text(upRating);
-              "
-            >
-
-            <div class="slider-container">
-              <output id="slider-downRating">50%</output>
-              <output id="slider-upRating">50%</output>
-            </div>
-            <div class="slider-anchors">
-              <span class="jspsych-slider-left-anchor">
-                Believe this is morally bad
-              </span>
-              <span class="jspsych-slider-right-anchor">
-                Believe this is morally good
-              </span>
-            </div>
-          </div><br><br><br>
-
-
-          <!-- Pre-Sampling Moral Estimate Confidence -->
-
-          <input type="hidden" name="pre-slider-moral-confidence-clicked" value="false">
-          <label for="pre-slider-moral-confidence" class="jspsych-survey-multi-choice-question">
-            How confident are you in your answer?
-          <div style="position: relative;">
-            <input 
-              name="pre-slider-moral-confidence" 
-              type="range" 
-              class="jspsych-slider incomplete" 
-              value="50" min="0" max="100" step="1" 
-              id="pre-slider-moral-confidence"
-              onmousedown="
-                this.classList.remove('incomplete');
-                this.classList.add('unipolar-clicked');
-
-                document.getElementsByName('pre-slider-moral-confidence-clicked')[0].value = 'true';
-              "
-              oninput="
-                this.classList.remove('incomplete');
-                this.classList.add('unipolar-clicked');
-
-                document.getElementsByName('pre-slider-moral-confidence-clicked')[0].value = 'true';
-              "
-            >
-            <div class="slider-anchors">
-              <span class="jspsych-slider-left-anchor">
-                Not at all confident
-              </span>
-              <span class="jspsych-slider-right-anchor">
-                Completely confident
-              </span>
-            </div>
-          </div><br><br><br>`,
-    button_label: 'Next',
-    request_response: true,
-    on_finish: function (data) {
-      let preSamplingMoralOtherData = data.response;
-
-      let pre_slider_moral_estimate_percent_check = preSamplingMoralOtherData['pre-slider-moral-estimate-percent-clicked'] === 'true' ? preSamplingMoralOtherData['pre-slider-moral-estimate-percent'] : null;
-      let pre_slider_moral_confidence_check = preSamplingMoralOtherData['pre-slider-moral-confidence-clicked'] === 'true' ? preSamplingMoralOtherData['pre-slider-moral-confidence'] : null;
-
-      preSamplingMoralOtherData = {
-        pre_slider_moral_estimate_percent: pre_slider_moral_estimate_percent_check,
-        pre_slider_moral_confidence: pre_slider_moral_confidence_check,
-      };
-
-      jsPsych.data
-        .getDataByTimelineNode(jsPsych.getCurrentTimelineNodeID())
-        .addToAll(preSamplingMoralOtherData);
-    }
-  };
-};
 
 function selectionTask(normManipulation, politicalManipulation, contributionManipulation, avatarDictionary) {
   return {
@@ -711,430 +510,9 @@ for (let i = 0; i < 100; i++) {
   selectionTask = Object.assign(selectionTask, { [avatarName]: avatar });
 };
 
-// Post-Predictions (Self) //
-function postPredictionsSelf() {
-  return {
-    type: jsPsychSurveyHtmlForm,
-    preamble: `
-          <p class="jspsych-survey-multi-choice-preamble">
-            Now that you've had the chance to see what other people 
-            think about the statement, we want to know what you think again.
-            Please answer the following questions:
-          </p><br><br>`,
-    html: `
-          <!-- Post-Sampling Moral Action Rating -->
-
-          <input type="hidden" name="post-slider-moral-action-clicked" value="false">
-          <label for="post-slider-moral-action" class="jspsych-survey-multi-choice-question">
-            To what extent do you think this <em>action</em> is morally good or morally bad? 
-          </label>
-          <div style="position: relative;">
-            <input 
-              name="post-slider-moral-action" 
-              type="range" 
-              class="jspsych-slider incomplete" 
-              value="50" min="0" max="100" step="1" 
-              id="post-slider-moral-action"
-              onmousedown="
-                this.classList.remove('incomplete');
-                this.classList.add('bipolar-clicked');
-                document.getElementsByName('post-slider-moral-action-clicked')[0].value = 'true';
-              "
-              oninput="
-                this.classList.remove('incomplete');
-                this.classList.add('bipolar-clicked');
-                document.getElementsByName('post-slider-moral-action-clicked')[0].value = 'true';
-              "
-            >
-            <div class="slider-anchors">
-              <span class="jspsych-slider-left-anchor">
-                Definitely morally bad
-              </span>
-              <span class="jspsych-slider-right-anchor">
-                Definitely morally good
-              </span>
-            </div>
-          </div><br><br><br>
-          
-
-          <!-- Post-Sampling Moral Person Rating -->
-
-          <input type="hidden" name="post-slider-moral-person-clicked" value="false">
-          <label for="post-slider-moral-person" class="jspsych-survey-multi-choice-question">
-            To what extent do you think this <em>person</em> is morally good or morally bad? 
-          </label>
-          <div style="position: relative;">
-            <input 
-              name="post-slider-moral-person"
-              type="range" 
-              class="jspsych-slider incomplete" 
-              value="50" min="0" max="100" step="1" 
-              id="post-slider-moral-person"
-              onmousedown="
-                this.classList.remove('incomplete');
-                this.classList.add('bipolar-clicked');
-                document.getElementsByName('post-slider-moral-person-clicked')[0].value = 'true';
-              "
-              oninput="
-                this.classList.remove('incomplete');
-                this.classList.add('bipolar-clicked');
-                document.getElementsByName('post-slider-moral-person-clicked')[0].value = 'true';
-              "
-            >
-            <div class="slider-anchors">
-              <span class="jspsych-slider-left-anchor">
-                Definitely morally bad
-              </span>
-              <span class="jspsych-slider-right-anchor">
-                Definitely morally good
-              </span>
-            </div>
-          </div><br><br><br>`,
-    button_label: 'Next',
-    request_response: true,
-    on_finish: function (data) {
-      let postSamplingMoralSelfData = data.response;
-
-      let post_slider_moral_action_check = postSamplingMoralSelfData['post-slider-moral-action-clicked'] === 'true' ? postSamplingMoralSelfData['post-slider-moral-action'] : null;
-      let post_slider_moral_person_check = postSamplingMoralSelfData['post-slider-moral-person-clicked'] === 'true' ? postSamplingMoralSelfData['post-slider-moral-person'] : null;
-
-      postSamplingMoralSelfData = {
-        post_slider_moral_action: post_slider_moral_action_check,
-        post_slider_moral_person: post_slider_moral_person_check
-      };
-
-      jsPsych.data
-        .getDataByTimelineNode(jsPsych.getCurrentTimelineNodeID())
-        .addToAll(postSamplingMoralSelfData);
-    }
-  };
-};
-
-// Post-Predictions (Other) //
-function postPredictionsOther() {
-  return {
-    type: jsPsychSurveyHtmlForm,
-    preamble: `
-          <p class="jspsych-survey-multi-choice-preamble">
-            Now that you've had the chance to see what other people 
-            think about the statement, we want to know what you think again.
-            Please answer the following questions:
-          </p><br><br>`,
-    html: `
-          <!-- Post-Sampling Moral Estimate Rating -->
-
-          <input type="hidden" name="post-slider-moral-estimate-percent-clicked" value="false">
-          <label for="post-slider-moral-estimate-percent" class="jspsych-survey-multi-choice-question">
-            What percentage of people in the U.S. do you think consider this action to be morally good vs. think this is morally bad?
-          </label>
-          <div style="position: relative;">
-            <input 
-              name="post-slider-moral-estimate-percent" 
-              type="range" 
-              class="jspsych-slider incomplete" 
-              value="50" min="0" max="100" step="1" 
-              id="post-slider-moral-estimate-percent"
-              onmousedown="
-                this.classList.remove('incomplete');
-                this.classList.add('bipolar-clicked');
-
-                document.getElementsByName('post-slider-moral-estimate-percent-clicked')[0].value = 'true';
-              
-                let rawRating = parseFloat(this.value);
-                let downRating = (100 - rawRating) + '%';
-                let upRating = rawRating + '%';
-              
-                $('#slider-downRating').text(downRating);
-                $('#slider-upRating').text(upRating);
-              "
-              oninput="
-                this.classList.remove('incomplete');
-                this.classList.add('bipolar-clicked');
-
-                document.getElementsByName('post-slider-moral-estimate-percent-clicked')[0].value = 'true';
-              
-                let rawRating = parseFloat(this.value);
-                let downRating = (100 - rawRating) + '%';
-                let upRating = rawRating + '%';
-              
-                $('#slider-downRating').text(downRating);
-                $('#slider-upRating').text(upRating);
-              "
-            >
-            <div class="slider-container">
-              <output id="slider-downRating">50%</output>
-              <output id="slider-upRating">50%</output>
-            </div>
-            <div class="slider-anchors">
-              <span class="jspsych-slider-left-anchor">
-                Believe this action is morally bad
-              </span>
-              <span class="jspsych-slider-right-anchor">
-                Believe this action is morally good
-              </span>
-            </div>
-          </div><br><br><br>
-
-          
-          <!-- Post-Sampling Moral Estimate Confidence -->
-          
-          <input type="hidden" name="post-slider-moral-confidence-clicked" value="false">
-          <label for="post-slider-moral-confidence" class="jspsych-survey-multi-choice-question">
-            How confident are you in your answer?
-          </label>
-          <div style="position: relative;">
-            <input 
-              name="post-slider-moral-confidence" 
-              type="range" 
-              class="jspsych-slider incomplete" 
-              value="50" min="0" max="100" step="1" 
-              id="post-slider-moral-confidence"
-              onmousedown="
-                this.classList.remove('incomplete');
-                this.classList.add('unipolar-clicked');
-
-                document.getElementsByName('post-slider-moral-confidence-clicked')[0].value = 'true';
-              "
-              oninput="
-                this.classList.remove('incomplete');
-                this.classList.add('unipolar-clicked');
-
-                document.getElementsByName('post-slider-moral-confidence-clicked')[0].value = 'true';
-              "
-            >
-            <div class="slider-anchors">
-              <span class="jspsych-slider-left-anchor">
-                Not at all confident
-              </span>
-              <span class="jspsych-slider-right-anchor">
-                Completely confident
-              </span>
-            </div>
-          </div><br><br><br>`,
-    button_label: 'Next',
-    request_response: true,
-    on_finish: function (data) {
-      let postSamplingMoralOtherData = data.response;
-
-      let post_slider_moral_estimate_percent_check = postSamplingMoralOtherData['post-slider-moral-estimate-percent-clicked'] === 'true' ? postSamplingMoralOtherData['post-slider-moral-estimate-percent'] : null;
-      let post_slider_moral_confidence_check = postSamplingMoralOtherData['post-slider-moral-confidence-clicked'] === 'true' ? postSamplingMoralOtherData['post-slider-moral-confidence'] : null;
-
-      postSamplingMoralOtherData = {
-        post_slider_moral_estimate_percent: post_slider_moral_estimate_percent_check,
-        post_slider_moral_confidence: post_slider_moral_confidence_check
-      };
-
-      jsPsych.data
-        .getDataByTimelineNode(jsPsych.getCurrentTimelineNodeID())
-        .addToAll(postSamplingMoralOtherData);
-    }
-  };
-};
-
-// INDIVIDUAL DIFFERENCES //
-const instructionsIndividualDifferences = {
-  type: jsPsychInstructions,
-  pages: [`
-    <p style="text-align: left;">
-      We will start by asking you some questions about yourself. 
-      Please answer honestly. After you complete these, you will begin the main task.
-    </p>
-    `],
-  show_clickable_nav: true
-}
-
-// IRI - Perspective Taking //
-const iriQuestions = {
-  type: jsPsychSurveyMultiChoice,
-  questions: [
-    {
-      name: 'iri-1',
-      prompt:
-        `<p class="jspsych-survey-multi-choice-question">
-        I try to look at everybody's side of a disagreement before I make a decision.
-        </p>`,
-      options: iriResponses,
-      horizontal: true
-    },
-    {
-      name: 'iri-2',
-      prompt:
-        `<p class="jspsych-survey-multi-choice-question">
-        I sometimes try to understand my friends better by imagining how things
-        look from their perspective.
-        </p>`,
-      options: iriResponses,
-      horizontal: true
-    },
-    {
-      name: 'iri-3',
-      prompt:
-        `<p class="jspsych-survey-multi-choice-question">
-        When I'm upset at someone, I usually try to 'put myself in his shoes' for a
-        while.
-        </p>`,
-      options: iriResponses,
-      horizontal: true
-    },
-    {
-      name: 'iri-4',
-      prompt:
-        `<p class="jspsych-survey-multi-choice-question">
-        Before criticizing somebody, I try to imagine how I would feel if I were in
-        their place.
-        </p>`,
-      options: iriResponses,
-      horizontal: true
-    }
-  ],
-  randomize_question_order: true,
-  request_response: true,
-  preamble:
-    `<p class="jspsych-survey-multi-choice-preamble">
-      Please indicate how well each of the following statements
-      describe you using the scale provided:
-    </p>`,
-  scale_width: 500,
-  on_finish: function (data) {
-    let iriData = data.response;
-
-    iriData = {
-      iri_1: iriData['iri-1'],
-      iri_2: iriData['iri-2'],
-      iri_3: iriData['iri-3'],
-      iri_4: iriData['iri-4']
-    };
-
-    jsPsych.data
-      .getDataByTimelineNode(jsPsych.getCurrentTimelineNodeID())
-      .addToAll(iriData);
-  }
-};
-
-const ihQuestions = {
-  type: jsPsychSurveyMultiChoice,
-  questions: [
-    {
-      name: "ih-1-r",
-      prompt: `
-        <p class="jspsych-survey-multi-choice-question">
-        My intellectual ideas are usually superior to others' ideas.</strong>
-        </p>`,
-      options: ihResponses,
-      horizontal: true,
-      // anchor: true,
-      // labels: ['Strongly Disagree', 'Strongly Agree']
-    },
-    {
-      name: "ih-2-r",
-      prompt: `
-        <p class="jspsych-survey-multi-choice-question">
-        I desire to be famous for an intellectual contribution.</strong>
-        </p>`,
-      options: ihResponses,
-      horizontal: true
-    },
-    {
-      name: "ih-3-r",
-      prompt: `
-        <p class="jspsych-survey-multi-choice-question">
-        I know just about everything there is to know. </strong>
-        </p>`,
-      options: ihResponses,
-      horizontal: true
-    },
-    {
-      name: "ih-4-r",
-      prompt: `
-        <p class="jspsych-survey-multi-choice-question">
-        Other people think that I am a know-it-all.</strong>
-        </p>`,
-      options: ihResponses,
-      horizontal: true
-    },
-    {
-      name: "ih-5",
-      prompt: `
-        <p class="jspsych-survey-multi-choice-question">
-        I am open to other's ideas about how to do things.</strong>
-        </p>`,
-      options: ihResponses,
-      horizontal: true
-    },
-    {
-      name: "ih-6",
-      prompt: `
-        <p class="jspsych-survey-multi-choice-question">
-        I can learn from other people.</strong>
-        </p>`,
-      options: ihResponses,
-      horizontal: true
-    },
-    {
-      name: "ih-7",
-      prompt: `
-        <p class="jspsych-survey-multi-choice-question">
-        I am open to others' criticisms of my intellectual ideas.</strong>
-        </p>`,
-      options: ihResponses,
-      horizontal: true
-    },
-    {
-      name: "ih-8",
-      prompt: `
-        <p class="jspsych-survey-multi-choice-question">
-        I am an intellectually humble person.</strong>
-        </p>`,
-      options: ihResponses,
-      horizontal: true
-    }
-  ],
-  randomize_question_order: true,
-  request_response: true,
-  preamble: `
-    <p class="jspsych-survey-multi-choice-preamble">
-      For each of the statements below, please indicate how much the statement
-      is generally characteristic of you.
-    </p>`,
-  on_finish: function (data) {
-    let ihData = data.response;
-
-    ihData = {
-      ih_1_r: ihData['ih-1-r'],
-      ih_2_r: ihData['ih-2-r'],
-      ih_3_r: ihData['ih-3-r'],
-      ih_4_r: ihData['ih-4-r'],
-      ih_5: ihData['ih-5'],
-      ih_6: ihData['ih-6'],
-      ih_7: ihData['ih-7'],
-      ih_8: ihData['ih-8']
-    };
-
-    jsPsych.data
-      .getDataByTimelineNode(jsPsych.getCurrentTimelineNodeID())
-      .addToAll(ihData);
-  }
-};
-
-// Instructions
-// timeline.push(instructions, instructionsComprehensionCheck);
-
 // Sampling Task
+ timeline.push(selectionTask())
 
- timeline.push(
-  // prePredictionsSelf(),
-  // prePredictionsOther(),
-  selectionTask(),
-  postPredictionsSelf(),
-  postPredictionsOther())
-
-
-// Opportunity to learn the true percentage... (take from intro)
-// Instructional screen
-// Curiosity is regarding learning about information
-
-// Post-Sampling Individual Differences
-timeline.push(iriQuestions, ihQuestions);
 
 // DEMOGRAPHICS //
 const demographicsQuestions = {
