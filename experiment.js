@@ -1127,6 +1127,7 @@ const exitFullscreen = {
 timeline.push(exitFullscreen);
 
 // Choose from among these to relay via DataPipe
+const preregisteredExperimentId = "jWr5Nul5HYl2";
 const debugExperimentId = "XyR978iH6AOX";
 
 // DataPipe conclude data collection

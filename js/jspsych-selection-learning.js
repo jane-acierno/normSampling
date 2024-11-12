@@ -52,14 +52,25 @@ var jsPsychSelectionLearning = (function (jspsych) {
 		};
 
 		trial(display_element, trial) {
+			let samplingInstructions;
+			
+			if (normManipulation === 'descriptive' && politicalManipulation === 'present') {
+				samplingInstructions = "Now you can see what past participants contributed. Click on an avatar to see that person's contribution. Remember, a blue circle indicates the participant is a Democrat, and a red circle indicates the participant is a Republican.";
+			} else if (normManipulation === 'descriptive' && politicalManipulation === 'absent') {
+				samplingInstructions = "Now you can see what past participants contributed. Click on an avatar to see that person's contribution.";
+			} else if (normManipulation === 'injunctive' && politicalManipulation === 'present') {
+				samplingInstructions = "Now you can see what previous participants think players should contribute. Click on an avatar to see that person's opinion. Remember, a blue circle indicates the participant is a Democrat, and a red circle indicates the participant is a Republican.";
+			} else if (normManipulation === 'injunctive' && politicalManipulation === 'absent') {
+				samplingInstructions = "Now you can see what previous participants think players should contribute. Click on an avatar to see that person's opinion.";
+			}
+
 			display_element.innerHTML +=
 				// Pt. 1: Box
 				`<div id="jspsych-instructions">
 					<div class="quote">
-						<h2>Search Task</h2>
+						<h2>Opportunity to View Previous Participants' Opinions</h2>
 						<p>
-							Now you can see what other people think.
-							Click on an avatar to see that person's opinion on the following sentence:
+							${samplingInstructions}
 						</p>
 					</div>
 				</div>` +
@@ -240,7 +251,6 @@ var jsPsychSelectionLearning = (function (jspsych) {
 			let democratAffiliationArray;
 			let republicanAffiliationArray;
 
-
 			// Create an array of labels, 50 for each party, and shuffle it
 			if (politicalManipulation == "present") {
 
@@ -286,10 +296,12 @@ var jsPsychSelectionLearning = (function (jspsych) {
 			const samplingPromptContainer = $('#prompt-container');
 			samplingPromptContainer.html(`
 				<strong id="samplingPrompt" style="text-transform: uppercase;">
-					Click on the person whose opinion you would like to read next	
+					click on the person whose opinion you would like to view next	
 				</strong>
 				<br>
-				(SCROLL TO VIEW MORE)
+				<span style="text-transform: uppercase;">
+					(scroll to view more)
+				</span>
 				<br>`
 			);
 
@@ -300,6 +312,7 @@ var jsPsychSelectionLearning = (function (jspsych) {
 			let avatarPositionIndices = [];
 			let avatarPositionXIndices = [];
 			let avatarPositionYIndices = [];
+			let avatarOpinions = [];
 
 			// Reaction times for clicking on boxes
 			let clickRtArray = [];
@@ -522,8 +535,6 @@ var jsPsychSelectionLearning = (function (jspsych) {
 						}
 
 						clickRtArray.push(clickRt);
-						console.log(clickRtArray);
-
 						endTrial();
 					});
 
@@ -573,6 +584,9 @@ var jsPsychSelectionLearning = (function (jspsych) {
 
 							let avatarPositionYIndex = Math.floor(avatarPositionIndex / 4);
 							avatarPositionYIndices.push(avatarPositionYIndex);
+
+							let avatarOpinion = sliderRatings[avatarNumber];
+							avatarOpinions.push(avatarOpinion);
 						};
 
 						if (!isLearningInProgress && !this.classList.contains('disabled')) {
@@ -629,6 +643,7 @@ var jsPsychSelectionLearning = (function (jspsych) {
 					"all_political_avatars": politicalAffiliationArray,
 					"democrat_avatars": democratAffiliationArray,
 					"republican_avatars": republicanAffiliationArray,
+					"avatar_opinions": avatarOpinions,
 					"click_rt_array": clickRtArray.join(','),
 					"view_rt_array": viewRtArray.join(','),
 					"task_duration": taskDuration
