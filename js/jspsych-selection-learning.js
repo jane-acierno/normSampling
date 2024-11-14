@@ -251,25 +251,24 @@ var jsPsychSelectionLearning = (function (jspsych) {
 			let democratAffiliationArray;
 			let republicanAffiliationArray;
 
+			// Create an array populated with either 'avatar-circle-democrat' or 'avatar-circle-republican' depending on index
+			// EXAMPLE: ['avatar-circle-democrat', 'avatar-circle-democrat', 'avatar-circle-republican', ..., 'avatar-circle-democrat']
+			politicalAffiliationArray = jsPsych.randomization.shuffle(
+				new Array(50).fill('avatar-circle-democrat').concat(new Array(50).fill('avatar-circle-republican'))
+			);
+
+			// Split into two arrays: 50 for Democrats
+			// EXAMPLE: [0, 2, 4, ..., 98]
+			// Get the indices of 'avatar-circle-democrat'
+			democratAffiliationArray = politicalAffiliationArray.map((affiliation, index) => affiliation === 'avatar-circle-democrat' ? index : null).filter(index => index !== null);
+
+			// ...and 50 for Republicans
+			// EXAMPLE: [1, 3, 5, ..., 99]
+			republicanAffiliationArray = politicalAffiliationArray.map((affiliation, index) => affiliation === 'avatar-circle-republican' ? index : null).filter(index => index !== null);
+			
 			// Create an array of labels, 50 for each party, and shuffle it
 			if (politicalManipulation == "present") {
 
-				// Create an array populated with either 'avatar-circle-democrat' or 'avatar-circle-republican' depending on index
-				// EXAMPLE: ['avatar-circle-democrat', 'avatar-circle-democrat', 'avatar-circle-republican', ..., 'avatar-circle-democrat']
-				politicalAffiliationArray = jsPsych.randomization.shuffle(
-					new Array(50).fill('avatar-circle-democrat').concat(new Array(50).fill('avatar-circle-republican'))
-				);
-
-				// Split into two arrays: 50 for Democrats
-				// EXAMPLE: [0, 2, 4, ..., 98]
-				// Get the indices of 'avatar-circle-democrat'
-				democratAffiliationArray = politicalAffiliationArray.map((affiliation, index) => affiliation === 'avatar-circle-democrat' ? index : null).filter(index => index !== null);
-
-				// ...and 50 for Republicans
-				// EXAMPLE: [1, 3, 5, ..., 99]
-				republicanAffiliationArray = politicalAffiliationArray.map((affiliation, index) => affiliation === 'avatar-circle-republican' ? index : null).filter(index => index !== null);
-
-				
 				for (let i = 0; i < 100; i++) {
 					const avatarCircle = $(`<div class='avatar-circle clickable ${politicalAffiliationArray[i]}' id='circle${randomizedAvatarNumberArray[i]}'></div>`);
 	
@@ -322,6 +321,11 @@ var jsPsychSelectionLearning = (function (jspsych) {
 
 			let sliderRatings = [];
 
+
+			let targetArrayDemocrat;
+			let targetArrayRepublican;
+			
+
 			// this takes the number of the avatar (e.g., #12) and uses the number (1 to 100) as an index to retrieve the rating number at that
 			// "index" from the selectionRatings array's trial.trialIndex element. If the avatar is 12, then we actually are retrieving the 11th (12 - 1) index
 			// However, the problem is that trial.trialIndex is not what we want. The order is not always 0 to 4 Roentgen, Akon, Gandhi, Lovelace, Turing.
@@ -330,35 +334,34 @@ var jsPsychSelectionLearning = (function (jspsych) {
 				switch (normManipulation) {
 					case "descriptive":
 						if (contributionManipulation == "low") {
-							var targetArrayDemocrat   = selectionRatingsDict['descriptiveDemocratLow'];
-							var targetArrayRepublican = selectionRatingsDict['descriptiveRepublicanLow'];
+							targetArrayDemocrat   = selectionRatingsDict['descriptiveDemocratLow'];
+							targetArrayRepublican = selectionRatingsDict['descriptiveRepublicanLow'];
 						} else if (contributionManipulation == "high") {
-							var targetArrayDemocrat   = selectionRatingsDict['descriptiveDemocratHigh'];
-							var targetArrayRepublican = selectionRatingsDict['descriptiveRepublicanHigh'];
+							targetArrayDemocrat   = selectionRatingsDict['descriptiveDemocratHigh'];
+							targetArrayRepublican = selectionRatingsDict['descriptiveRepublicanHigh'];
 						}
 						break;
 						
 					case "injunctive":
 						if (contributionManipulation == "low") {
-							var targetArrayDemocrat   = selectionRatingsDict['injunctiveDemocratLow'];
-							var targetArrayRepublican = selectionRatingsDict['injunctiveRepublicanLow'];
+							targetArrayDemocrat   = selectionRatingsDict['injunctiveDemocratLow'];
+							targetArrayRepublican = selectionRatingsDict['injunctiveRepublicanLow'];
 						} else if (contributionManipulation == "high") {
-							var targetArrayDemocrat   = selectionRatingsDict['injunctiveDemocratHigh'];
-							var targetArrayRepublican = selectionRatingsDict['injunctiveRepublicanHigh'];
+							targetArrayDemocrat   = selectionRatingsDict['injunctiveDemocratHigh'];
+							targetArrayRepublican = selectionRatingsDict['injunctiveRepublicanHigh'];
 						}
 						break;
 				};
 				
 				// if i is a democrat's index, push the jth index rating from the 50 democrat ratings
 
-				if (politicalManipulation == "present") {
-					var yokedIndex = randomizedAvatarNumberArray[i] - 1; // this is the number of the avatar, already shuffled
-					if (democratAffiliationArray.includes(yokedIndex)) {
-						sliderRatings.push(targetArrayDemocrat.shift());
-					} else if (republicanAffiliationArray.includes(yokedIndex)) {
-						sliderRatings.push(targetArrayRepublican.shift());
-					}
-				}
+				// if (politicalManipulation == "present") {
+				var yokedIndex = randomizedAvatarNumberArray[i] - 1; // this is the number of the avatar, already shuffled
+				if (democratAffiliationArray.includes(yokedIndex)) {
+					sliderRatings.push(targetArrayDemocrat.shift());
+				} else if (republicanAffiliationArray.includes(yokedIndex)) {
+					sliderRatings.push(targetArrayRepublican.shift());
+				};
 			};
 
 			var advanceButton = `<button class="jspsych-btn"><i class='fa-solid fa-circle-check' style='color: green'></i>&nbsp;&nbsp;I'm all done</button>`
@@ -405,26 +408,43 @@ var jsPsychSelectionLearning = (function (jspsych) {
 					class: 'avatar-photo'
 				}).appendTo(avatarCircleSelection);
 
-				const ratingPrompt = "How morally good or morally bad do you think this action is?"
-				const textDownRating = "Extremely morally bad";
-				const textUpRating = "Extremely morally good";
+				let ratingPrompt;
+				if (normManipulation == "descriptive") {
+					ratingPrompt = `Contribution amount: ${sliderRatings[avatarNumber]} points`;
+				} else if (normManipulation == "injunctive") {
+					ratingPrompt = `Preferred contribution amount: ${sliderRatings[avatarNumber]} points`;
+				};
+				const textDownRating = "0 points";
+				const textUpRating   = "500 points";
 
 				const labelElement = $('<label>', {
 					for: "rating-slider",
 				}).text(ratingPrompt);
 
+				// Step 1: Create the input element with initial attributes
 				const inputElement = $('<input>', {
 					name: 'rating-slider',
 					type: 'range',
 					class: 'jspsych-slider bipolar-clicked',
 					value: sliderRatings[avatarNumber],
-					min: 0, max: 100, step: 1,
+					min: 0,
+					max: 500,
+					step: 1,
 					id: 'rating-slider',
-					oninput: `
-						this.classList.remove('bipolar-clicked');
-						$('#rating-slider').addClass('fade-out');
-					`,
 					disabled: true
+				});
+
+				// Step 2: Append the slider to the DOM
+				$('#slider-container').append(inputElement); // Adjust to actual container
+
+				// Step 3: Reapply attributes and trigger input after DOM is ready
+				$(document).ready(function() {
+					const slider = $('#rating-slider');
+					slider.attr({
+						min: 0,
+						max: 500,
+						value: sliderRatings[avatarNumber]
+					}).trigger('input'); // Force re-rendering
 				});
 
 				const sliderRating = $('<div>', {
@@ -433,15 +453,20 @@ var jsPsychSelectionLearning = (function (jspsych) {
 					labelElement,
 					inputElement,
 					$('<br>'),
-					$('<span>', {
-						style: 'position: absolute; left: 0; font-size: 10pt;',
-						text: textDownRating
-					}),
-					$('<span>', {
-						style: 'position: absolute; right: 0; font-size: 10pt;',
-						text: textUpRating
-					})
+					$('<div>', {
+						class: 'slider-anchors'
+					}).append(
+						$('<span>', {
+							class: 'jspsych-slider-left-anchor',
+							text: textDownRating
+						}),
+						$('<span>', {
+							class: 'jspsych-slider-right-anchor',
+							text: textUpRating
+						})
+					)
 				);
+				
 
 				trialFormat.append(avatarContainer, sliderRating);
 				trialPresentationSpace.html(`<div></div>`);
@@ -522,7 +547,7 @@ var jsPsychSelectionLearning = (function (jspsych) {
 					$('#jspsych-selection-learning-button-1').on('click', function (e) {
 						// RT: STOP STOPWATCH (VIEW)
 						let viewToc = (new Date()).getTime();
-						let viewRt = viewToc - viewTic;
+						let viewRt  = viewToc - viewTic;
 						viewRtArray.push(viewRt);
 
 						// RT: STOP STOPWATCH (CLICK)
@@ -550,14 +575,17 @@ var jsPsychSelectionLearning = (function (jspsych) {
 					let isLearningInProgress = false; // Flag variable
 					const clickHandler = function () {
 
+						let currentIndex; 
+						let politicalAffiliaton;
+
 						if (currentSelection !== avatarNumber) {
 							// <!-- Find actual index of the avatar --> //
 							avatarSelections.push(avatarNumber); // Push circle index to selections
 							currentSelection = avatarNumber; // Update current selection
 
 							if (politicalManipulation == "present") {
-								var currentIndex = randomizedAvatarNumberArray.indexOf(currentSelection);
-								var politicalAffiliaton = politicalAffiliationArray[currentIndex]
+								currentIndex = randomizedAvatarNumberArray.indexOf(currentSelection);
+								politicalAffiliaton = politicalAffiliationArray[currentIndex]
 								avatarPoliticalAffiliations.push(politicalAffiliaton);
 							};
 
@@ -607,8 +635,9 @@ var jsPsychSelectionLearning = (function (jspsych) {
 								} else if (politicalAffiliationArray[currentIndex] == "avatar-circle-republican") {
 									$("#circle" + avatarNumber).css("border-color", "rgba(232, 27, 35, 0.5)");
 								}
+							} else if (politicalManipulation == "absent") {
+								$("#circle" + avatarNumber).css("border-color", "rgba(0, 0, 0, 0.5)");
 							};
-							$("#circle" + avatarNumber).css("border-color", "0.5");
 							$("#circle" + avatarNumber).find("img.avatar-photo").css("opacity", "0.5");  // Fades avatar photo
 							initLearning(avatarNumber);  // Start trial
 							isLearningInProgress = false;
