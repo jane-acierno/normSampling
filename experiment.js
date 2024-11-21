@@ -450,37 +450,55 @@ for (let i = 0; i < 100; i++) {
 // Sampling Task
 timeline.push(selectionTask())
 
-// PGG
+
 const contributionPGG = {
-  type: jsPsychSurveyText,
-  questions: [
-    {
-      name: 'contribution',
-      prompt: `<p>Now it is time to play the game.</p>
-               <p>You have received 500 points. In the upcoming days you will be randomly grouped with 3 other participants, 
-               forming a group of 4. The other 3 participants will have also received 500 points each.</p>
-               <p>Your task is to decide how much money to transfer to the 'common pool'. 
-               You can transfer any amount from 0 to 500 points, including 0 and 500. 
-               Each of the other 3 participants will make a decision about their transfer to the common pool.</p>
-               <p>After all 4 participants in your group have reached a decision, 
-               the transfers to the common pool are summed. Then, this sum is doubled. 
-               Finally, the doubled sum in the common pool is divided equally between the 4 participants in your group. 
-               You will receive your payoff in the upcoming days.</p>
-               <p>Please indicate in the box below how many points to transfer to the common pool.</p>
-               <br><br>Your contribution to the common pool:</br></br>`,
-      input_type: 'number',
-      placeholder: 'Enter a number between 0 and 500',
-      required: true,
-    }
-  ],
+  type: jsPsychSurveyHtmlForm,
+  preamble: `
+    <p>Now it is time to play the game.</p>
+    <p>You have received 500 points. In the upcoming days you will be randomly grouped with 3 other participants, 
+    forming a group of 4. The other 3 participants will have also received 500 points each.</p>
+    <p>Your task is to decide how much money to transfer to the 'common pool'. 
+    You can transfer any amount from 0 to 500 points, including 0 and 500. 
+    Each of the other 3 participants will make a decision about their transfer to the common pool.</p>
+    <p>After all 4 participants in your group have reached a decision, 
+    the transfers to the common pool are summed. Then, this sum is doubled. 
+    Finally, the doubled sum in the common pool is divided equally between the 4 participants in your group. 
+    You will receive your payoff in the upcoming days.</p>
+    <p>Please indicate in the box below how many points to transfer to the common pool.</p>
+    <br>Your contribution to the common pool:<br>
+  `,
+  html: `
+    <div class="jspsych-survey-multi-choice-question">
+      <label for="contribution">Your contribution to the common pool:</label><br>
+      <input 
+        type="number" 
+        id="contribution" 
+        name="contribution" 
+        min="0" 
+        max="500" 
+        style="padding: 5px; width: 60px;" 
+        required
+        oninput="this.classList.remove('incomplete');"
+      >
+    </div>
+  `,
+  button_label: 'Next',
   on_finish: function (data) {
-    const response = data.response.contribution;
+    const contribution = Number(data.response.contribution);
+
+    // Safeguard: Ensure a valid contribution is logged
+    const contributionPGGData = {
+      contribution: isNaN(contribution) ? 0 : contribution
+    };
+
+    // Add the data to the current trial's node
     jsPsych.data
-      .get()
-      .addToLast({ contribution: response });
+      .getDataByTimelineNode(jsPsych.getCurrentTimelineNodeID())
+      .addToAll(contributionPGGData);
   }
 };
 
+// Add the task to the timeline
 timeline.push(contributionPGG);
 
 
