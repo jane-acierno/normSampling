@@ -571,7 +571,7 @@ const demographicsQuestions = {
               type="checkbox" 
               id="race-ethnicity-black" 
               name="race-ethnicity-black" 
-              value="African or African-American" 
+              value="African-American or Black" 
               class="demographics-race-ethnicity incomplete"
               oninput="
                 let demographicsRaceEthnicity = document.querySelectorAll(
@@ -582,7 +582,7 @@ const demographicsQuestions = {
                 };
               "
             >
-            <label for="race-ethnicity-black">African or African-American</label>
+            <label for="race-ethnicity-black">African-American or Black</label>
           </div>
           <div class="jspsych-survey-multi-choice-option">
             <input 
@@ -625,7 +625,7 @@ const demographicsQuestions = {
               type="checkbox" 
               id="race-ethnicity-hispanic" 
               name="race-ethnicity-hispanic" 
-              value="Hispanic/Latino/a/e/x" 
+              value="Hispanic/Latino/a/x" 
               class="demographics-race-ethnicity incomplete"
               oninput="
                 let demographicsRaceEthnicity = document.querySelectorAll(
@@ -636,7 +636,7 @@ const demographicsQuestions = {
                 };
               "
             >
-            <label for="race-ethnicity-hispanic">Hispanic/Latino/a/e/x</label>
+            <label for="race-ethnicity-hispanic">Hispanic/Latino/a/x</label>
           </div>
           <div class="jspsych-survey-multi-choice-option">
             <input 
