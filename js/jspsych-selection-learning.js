@@ -50,37 +50,40 @@ var jsPsychSelectionLearning = (function (jspsych) {
 		constructor(jsPsych) {
 			this.jsPsych = jsPsych;
 		};
-
+	
 		trial(display_element, trial) {
 			let samplingInstructions;
-			
+			let instructionsTitle = "Opportunity to View Previous Participants' Opinions"; // Default title
+	
 			if (normManipulation === 'descriptive' && politicalManipulation === 'present') {
 				samplingInstructions = "Now you can see what past participants contributed. Click on an avatar to see that person's contribution. Remember, a blue circle indicates the participant is a Democrat, and a red circle indicates the participant is a Republican.";
+				instructionsTitle = "Opportunity to View Previous Participants' Contributions";
 			} else if (normManipulation === 'descriptive' && politicalManipulation === 'absent') {
 				samplingInstructions = "Now you can see what past participants contributed. Click on an avatar to see that person's contribution.";
+				instructionsTitle = "Opportunity to View Previous Participants' Contributions";
 			} else if (normManipulation === 'injunctive' && politicalManipulation === 'present') {
 				samplingInstructions = "Now you can see what previous participants think players should contribute. Click on an avatar to see that person's opinion. Remember, a blue circle indicates the participant is a Democrat, and a red circle indicates the participant is a Republican.";
 			} else if (normManipulation === 'injunctive' && politicalManipulation === 'absent') {
 				samplingInstructions = "Now you can see what previous participants think players should contribute. Click on an avatar to see that person's opinion.";
 			}
-
+	
 			display_element.innerHTML +=
 				// Pt. 1: Box
 				`<div id="jspsych-instructions">
 					<div class="quote">
-						<h2>Opportunity to View Previous Participants' Opinions</h2>
+						<h2>${instructionsTitle}</h2>
 						<p>
 							${samplingInstructions}
 						</p>
 					</div>
 				</div>` +
-
+	
 				// Pt. 2: Box
 				`<div id="trial-presentation-space" class="popup"></div><div id="overlay"></div>` +
-
+	
 				// Pt. 3: Prompt
 				`<div id="prompt-container"></div>` +
-
+	
 				// Pt. 4: Avatar Grid
 				`<div class="grid-container-wrapper">
 					<div class="grid-container" id="avatar-grid"></div>
