@@ -303,71 +303,8 @@ const instructionsGameCompCheck = {
     </p>`,
 };
 
-
 // Game instructions
 timeline.push(instructionsGame, instructionsGameCompCheck);
-
-
-// Pre-Predictions //
-const prePredictions = {
-  type: jsPsychSurveyHtmlForm,
-  preamble: `
-        <p class="jspsych-survey-multi-choice-preamble">
-          First we want to know your thoughts about the choices people in general make in this game.
-        </p><br><br>`,
-  html: `
-        <input type="hidden" name="pre-slider-clicked" value="false">
-        <label for="pre-slider" class="jspsych-survey-multi-choice-question">
-          Ignoring for now what people actually do, how much of their endowments do you think players should contribute to the common pool?
-        </label>
-        <div style="position: relative;">
-          <input 
-            name="pre-slider" 
-            type="range" 
-            class="jspsych-slider incomplete" 
-            value="250" min="0" max="500" step="1" 
-            id="pre-slider"
-            onmousedown="
-              this.classList.remove('incomplete');
-              this.classList.add('bipolar-clicked');
-              document.getElementsByName('pre-slider-clicked')[0].value = 'true';
-            "
-            oninput="
-              this.classList.remove('incomplete');
-              this.classList.add('bipolar-clicked');
-              document.getElementsByName('pre-slider-clicked')[0].value = 'true';
-            "
-          >
-          <div class="slider-anchors">
-            <span class="jspsych-slider-left-anchor">
-              0 points
-            </span>
-            <span class="jspsych-slider-right-anchor">
-              500 points
-            </span>
-          </div>
-        </div><br><br><br>`,
-  button_label: 'Next',
-  request_response: true,
-  on_finish: function (data) {
-    // Collect and structure data from the response
-    let preSamplingData = data.response;
-    let pre_slider_check = preSamplingData['pre-slider-clicked'] === 'true' ? preSamplingData['pre-slider'] : null;
-
-    // Organize data
-    preSamplingData = {
-      pre_slider: pre_slider_check,
-    };
-
-    // Add data to all timeline nodes for this step
-    jsPsych.data
-      .getDataByTimelineNode(jsPsych.getCurrentTimelineNodeID())
-      .addToAll(preSamplingData);
-  }
-};
-
-// Pre-prediction
-timeline.push(prePredictions);
 
 
 // ID INJUNCTIVE SAMPLING INSTRUCTIONS //
@@ -511,7 +448,8 @@ for (let i = 0; i < 100; i++) {
 };
 
 // Sampling Task
- timeline.push(selectionTask())
+timeline.push(selectionTask())
+
 
 
 // DEMOGRAPHICS //
