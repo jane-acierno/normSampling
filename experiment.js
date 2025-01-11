@@ -21,17 +21,17 @@ const sessionId = jsPsych.data.getURLVariable('SESSION_ID');
 const normManipulation = jsPsych.randomization.sampleWithoutReplacement(['injunctive', 'descriptive'], 1)[0];
 
 // Political vs. Non-Political
-const politicalManipulation = jsPsych.randomization.sampleWithoutReplacement(['present', 'absent'], 1)[0];
+const politicalManipulation = jsPsych.randomization.sampleWithoutReplacement(['political', 'nonpolitical'], 1)[0];
 
-// High vs. Low Contribution
-const contributionManipulation = jsPsych.randomization.sampleWithoutReplacement(['high', 'low'], 1)[0];
+// High vs. Low Party Contribution
+const contributionManipulation = jsPsych.randomization.sampleWithoutReplacement(['dHigh_rLow', 'rHigh_dLow'], 1)[0];
 
 // Concatenate individual manipulation outcomes to create composite condition variable
 const condition = normManipulation + "_" + politicalManipulation + "_" + contributionManipulation;
 
 
 // const filename = `${participantId}` + "_" + `${studyId}` + "_" + `${sessionId}.csv`;
-const filename = "debug3.csv"
+const filename = "debug.csv"
 
 jsPsych.data.addProperties({
   participantId: participantId,
@@ -203,7 +203,7 @@ const instructionsGame = {
       <ul style="text-align: left;">
         <li>
           If everyone contributes their entire endowments to the common pool,
-          everyone will end the game with 1000 points ($1).
+          everyone will end the game with 1000 points ($1.00).
         </li>
         <li>
           If no one contributes to the common pool, 
@@ -211,11 +211,11 @@ const instructionsGame = {
         </li>
         <li>
           If you do not contribute anything and the other players contribute their full endowments to the pool,
-          they will each end the game with 750 points ($0.75) and you will end the game with 1250 points ($1.25).
+          they will each end the game with 750 points ($0.75), and you will end the game with 1250 points ($1.25).
         </li>
         <li>
           If you contribute your full endowment and the other players do not contribute anything to the pool, 
-          you will end the game with 250 points ($0.25) and the other players will each end the game with 750 points ($0.75).
+          you will end the game with 250 points ($0.25), and the other players will each end the game with 750 points ($0.75).
         </li>
       </ul>
       <p style="text-align: left;">
@@ -391,22 +391,22 @@ const instructionsDescriptiveID = {
 
 
 // PUSH
-if (normManipulation === 'descriptive' && politicalManipulation === 'present') {
+if (normManipulation === 'descriptive' && politicalManipulation === 'political') {
   timeline.push(
     instructionsDescriptiveID,
     // instructionsDescriptiveIDComprehensionCheck
   );
-} else if (normManipulation === 'descriptive' && politicalManipulation === 'absent') {
+} else if (normManipulation === 'descriptive' && politicalManipulation === 'nonpolitical') {
   timeline.push(
     instructionsDescriptiveNoID,
     // instructionsDescriptiveNoIDComprehensionCheck
   );
-} else if (normManipulation === 'injunctive' && politicalManipulation === 'present') {
+} else if (normManipulation === 'injunctive' && politicalManipulation === 'political') {
   timeline.push(
     instructionsInjunctiveID,
     // instructionsInjunctiveIDComprehensionCheck
   );
-} else if (normManipulation === 'injunctive' && politicalManipulation === 'absent') {
+} else if (normManipulation === 'injunctive' && politicalManipulation === 'nonpolitical') {
   timeline.push(
     instructionsInjunctiveNoID,
     // instructionsInjunctiveNoIDComprehensionCheck
@@ -474,14 +474,13 @@ const contributionPGG = {
         type="number" 
         id="contribution" 
         name="contribution" 
-        min="0" 
-        max="500" 
+        min="0" max="500" 
         style="padding: 5px; width: 60px;" 
-        required
-        oninput="this.classList.remove('incomplete');"
+        required"
       >
     </div>
   `,
+
   button_label: 'Next',
   on_finish: function (data) {
     const contribution = Number(data.response.contribution);

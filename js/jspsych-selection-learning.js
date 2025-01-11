@@ -31,11 +31,11 @@ var jsPsychSelectionLearning = (function (jspsych) {
 			},
 			politicalManipulation: {
 				type: jspsych.ParameterType.HTML_STRING,
-				default: "absent"
+				default: "nonpolitical"
 			},			
 			contributionManipulation: {
 				type: jspsych.ParameterType.HTML_STRING,
-				default: "low"
+				default: "dHigh_rLow"
 			},			
 			choices: {
 				type: jspsych.ParameterType.STRING,
@@ -55,15 +55,15 @@ var jsPsychSelectionLearning = (function (jspsych) {
 			let samplingInstructions;
 			let instructionsTitle = "Opportunity to View Previous Participants' Opinions"; // Default title
 	
-			if (normManipulation === 'descriptive' && politicalManipulation === 'present') {
+			if (normManipulation === 'descriptive' && politicalManipulation === 'political') {
 				samplingInstructions = "Now you can see what past participants contributed. Click on an avatar to see that person's contribution. Remember, a blue circle indicates the participant is a Democrat, and a red circle indicates the participant is a Republican.";
 				instructionsTitle = "Opportunity to View Previous Participants' Contributions";
-			} else if (normManipulation === 'descriptive' && politicalManipulation === 'absent') {
+			} else if (normManipulation === 'descriptive' && politicalManipulation === 'nonpolitical') {
 				samplingInstructions = "Now you can see what past participants contributed. Click on an avatar to see that person's contribution.";
 				instructionsTitle = "Opportunity to View Previous Participants' Contributions";
-			} else if (normManipulation === 'injunctive' && politicalManipulation === 'present') {
+			} else if (normManipulation === 'injunctive' && politicalManipulation === 'political') {
 				samplingInstructions = "Now you can see what previous participants think players should contribute. Click on an avatar to see that person's opinion. Remember, a blue circle indicates the participant is a Democrat, and a red circle indicates the participant is a Republican.";
-			} else if (normManipulation === 'injunctive' && politicalManipulation === 'absent') {
+			} else if (normManipulation === 'injunctive' && politicalManipulation === 'nonpolitical') {
 				samplingInstructions = "Now you can see what previous participants think players should contribute. Click on an avatar to see that person's opinion.";
 			}
 	
@@ -270,7 +270,7 @@ var jsPsychSelectionLearning = (function (jspsych) {
 			republicanAffiliationArray = politicalAffiliationArray.map((affiliation, index) => affiliation === 'avatar-circle-republican' ? index : null).filter(index => index !== null);
 			
 			// Create an array of labels, 50 for each party, and shuffle it
-			if (politicalManipulation == "present") {
+			if (politicalManipulation == "political") {
 
 				for (let i = 0; i < 100; i++) {
 					const avatarCircle = $(`<div class='avatar-circle clickable ${politicalAffiliationArray[i]}' id='circle${randomizedAvatarNumberArray[i]}'></div>`);
@@ -281,7 +281,7 @@ var jsPsychSelectionLearning = (function (jspsych) {
 					circleId.append(avatarPhoto);
 				};
 
-			} else if (politicalManipulation == "absent") {
+			} else if (politicalManipulation == "nonpolitical") {
 				
 				for (let i = 0; i < 100; i++) {
 					const avatarCircle = $(`<div class='avatar-circle clickable avatar-circle-none' id='circle${randomizedAvatarNumberArray[i]}'></div>`);
@@ -314,7 +314,6 @@ var jsPsychSelectionLearning = (function (jspsych) {
 			let avatarPositionIndices = [];
 			let avatarPositionXIndices = [];
 			let avatarPositionYIndices = [];
-			let avatarOpinions = [];
 
 			// Reaction times for clicking on boxes
 			let clickRtArray = [];
@@ -323,6 +322,7 @@ var jsPsychSelectionLearning = (function (jspsych) {
 			let viewRtArray = [];
 
 			let sliderRatings = [];
+			let selectedSliderRatings = [];
 
 
 			let targetArrayDemocrat;
@@ -336,21 +336,21 @@ var jsPsychSelectionLearning = (function (jspsych) {
 				
 				switch (normManipulation) {
 					case "descriptive":
-						if (contributionManipulation == "low") {
-							targetArrayDemocrat   = selectionRatingsDict['descriptiveDemocratLow'];
-							targetArrayRepublican = selectionRatingsDict['descriptiveRepublicanLow'];
-						} else if (contributionManipulation == "high") {
+						if (contributionManipulation == "dHigh_rLow") {
 							targetArrayDemocrat   = selectionRatingsDict['descriptiveDemocratHigh'];
+							targetArrayRepublican = selectionRatingsDict['descriptiveRepublicanLow'];
+						} else if (contributionManipulation == "rHigh_dLow") {
+							targetArrayDemocrat   = selectionRatingsDict['descriptiveDemocratLow'];
 							targetArrayRepublican = selectionRatingsDict['descriptiveRepublicanHigh'];
 						}
 						break;
 						
 					case "injunctive":
-						if (contributionManipulation == "low") {
-							targetArrayDemocrat   = selectionRatingsDict['injunctiveDemocratLow'];
-							targetArrayRepublican = selectionRatingsDict['injunctiveRepublicanLow'];
-						} else if (contributionManipulation == "high") {
+						if (contributionManipulation == "dHigh_rLow") {
 							targetArrayDemocrat   = selectionRatingsDict['injunctiveDemocratHigh'];
+							targetArrayRepublican = selectionRatingsDict['injunctiveRepublicanLow'];
+						} else if (contributionManipulation == "rHigh_dLow") {
+							targetArrayDemocrat   = selectionRatingsDict['injunctiveDemocratLow'];
 							targetArrayRepublican = selectionRatingsDict['injunctiveRepublicanHigh'];
 						}
 						break;
@@ -379,7 +379,7 @@ var jsPsychSelectionLearning = (function (jspsych) {
 
 			let startTime = (new Date()).getTime();
 
-			const initLearning = (avatarNumber) => {
+			const initLearning = (avatarIndex, avatarNumber) => {
 				// RT: START STOPWATCH (VIEW)
 				let viewTic = (new Date()).getTime();
 
@@ -398,9 +398,9 @@ var jsPsychSelectionLearning = (function (jspsych) {
 					id: `circle${avatarNumber}`
 				}).appendTo(avatarContainer);
 
-				if (politicalManipulation == "present") {
+				if (politicalManipulation == "political") {
 					avatarCircleSelection.addClass(politicalAffiliationArray[randomizedAvatarNumberArray.indexOf(avatarNumber)]);
-				} else {
+				} else if (politicalManipulation == "nonpolitical") {
 					avatarCircleSelection.addClass('avatar-circle-none');
 				};
 
@@ -413,9 +413,9 @@ var jsPsychSelectionLearning = (function (jspsych) {
 
 				let ratingPrompt;
 				if (normManipulation == "descriptive") {
-					ratingPrompt = `Contribution amount: ${sliderRatings[avatarNumber]} points`;
+					ratingPrompt = `Contribution amount: ${sliderRatings[avatarIndex]} points`;
 				} else if (normManipulation == "injunctive") {
-					ratingPrompt = `Preferred contribution amount: ${sliderRatings[avatarNumber]} points`;
+					ratingPrompt = `Preferred contribution amount: ${sliderRatings[avatarIndex]} points`;
 				};
 				const textDownRating = "0 points";
 				const textUpRating   = "500 points";
@@ -429,7 +429,7 @@ var jsPsychSelectionLearning = (function (jspsych) {
 					name: 'rating-slider',
 					type: 'range',
 					class: 'jspsych-slider bipolar-clicked',
-					value: sliderRatings[avatarNumber],
+					value: sliderRatings[avatarIndex],
 					min: 0,
 					max: 500,
 					step: 1,
@@ -446,7 +446,7 @@ var jsPsychSelectionLearning = (function (jspsych) {
 					slider.attr({
 						min: 0,
 						max: 500,
-						value: sliderRatings[avatarNumber]
+						value: sliderRatings[avatarIndex]
 					}).trigger('input'); // Force re-rendering
 				});
 
@@ -572,9 +572,9 @@ var jsPsychSelectionLearning = (function (jspsych) {
 			const clickHandlers = {};
 			let currentSelection = null; // Track the current selection
 
-			for (let i = 1; i <= 100; i++) {
+			for (let avatarIndex = 0; avatarIndex < 100; avatarIndex++) {
 				(function (i) {
-					let avatarNumber = i
+					let avatarNumber = avatarIndex + 1;
 					let isLearningInProgress = false; // Flag variable
 					const clickHandler = function () {
 
@@ -584,9 +584,10 @@ var jsPsychSelectionLearning = (function (jspsych) {
 						if (currentSelection !== avatarNumber) {
 							// <!-- Find actual index of the avatar --> //
 							avatarSelections.push(avatarNumber); // Push circle index to selections
+							selectedSliderRatings.push(sliderRatings[avatarIndex]); // Push selected slider rating to selections
 							currentSelection = avatarNumber; // Update current selection
 
-							if (politicalManipulation == "present") {
+							if (politicalManipulation == "political") {
 								currentIndex = randomizedAvatarNumberArray.indexOf(currentSelection);
 								politicalAffiliaton = politicalAffiliationArray[currentIndex]
 								avatarPoliticalAffiliations.push(politicalAffiliaton);
@@ -616,8 +617,8 @@ var jsPsychSelectionLearning = (function (jspsych) {
 							let avatarPositionYIndex = Math.floor(avatarPositionIndex / 4);
 							avatarPositionYIndices.push(avatarPositionYIndex);
 
-							let avatarOpinion = sliderRatings[avatarNumber];
-							avatarOpinions.push(avatarOpinion);
+							let selectedSliderRating = sliderRatings[avatarNumber];
+							selectedSliderRatings.push(selectedSliderRating);
 						};
 
 						if (!isLearningInProgress && !this.classList.contains('disabled')) {
@@ -632,23 +633,23 @@ var jsPsychSelectionLearning = (function (jspsych) {
 							};
 
 							$("#circle" + avatarNumber).css("background-color", "#bbb");  // Fades background color
-							if (politicalManipulation == "present") {
+							if (politicalManipulation == "political") {
 								if (politicalAffiliationArray[currentIndex] == "avatar-circle-democrat") {
 									$("#circle" + avatarNumber).css("border-color", "rgba(1, 67, 202, 0.5)");
 								} else if (politicalAffiliationArray[currentIndex] == "avatar-circle-republican") {
 									$("#circle" + avatarNumber).css("border-color", "rgba(232, 27, 35, 0.5)");
 								}
-							} else if (politicalManipulation == "absent") {
+							} else if (politicalManipulation == "nonpolitical") {
 								$("#circle" + avatarNumber).css("border-color", "rgba(0, 0, 0, 0.5)");
 							};
 							$("#circle" + avatarNumber).find("img.avatar-photo").css("opacity", "0.5");  // Fades avatar photo
-							initLearning(avatarNumber);  // Start trial
+							initLearning(avatarIndex, avatarNumber);  // Start trial
 							isLearningInProgress = false;
 						};
 					};
 
 					$("#circle" + avatarNumber).on('click', clickHandler);
-					clickHandlers[i] = clickHandler;
+					clickHandlers[avatarIndex] = clickHandler;
 
 					startTime = (new Date()).getTime(); // Store the start time
 				})(i);
@@ -675,7 +676,7 @@ var jsPsychSelectionLearning = (function (jspsych) {
 					"all_political_avatars": politicalAffiliationArray,
 					"democrat_avatars": democratAffiliationArray,
 					"republican_avatars": republicanAffiliationArray,
-					"avatar_opinions": avatarOpinions,
+					"selected_slider_ratings": selectedSliderRatings,
 					"click_rt_array": clickRtArray.join(','),
 					"view_rt_array": viewRtArray.join(','),
 					"task_duration": taskDuration

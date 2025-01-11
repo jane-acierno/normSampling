@@ -530,7 +530,6 @@
 
 .jspsych-multi-choice-left-anchor,
 .jspsych-multi-choice-right-anchor {
-  position: relative;
   font-size: 10pt;
 }
 
@@ -966,7 +965,6 @@ input.unclickable {
   width: 150px;
   height: 150px;
   display: flex;
-
   align-items: center;
   justify-content: center;
   justify-self: center;
@@ -993,4 +991,9 @@ input.unclickable {
   position: absolute;
   text-align: center;
   font-size: 24px;
+}
+
+
+li {
+  margin-bottom: 10px;
 }
