@@ -652,7 +652,7 @@ var jsPsychSelectionLearning = (function (jspsych) {
 					clickHandlers[avatarIndex] = clickHandler;
 
 					startTime = (new Date()).getTime(); // Store the start time
-				})(i);
+				})(avatarIndex);
 			};
 
 			// Function to reattach event listeners
